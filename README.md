@@ -22,6 +22,9 @@ module "container_service_cluster" {
   key_name      = "hector"
   cloud_config  = "${data.template_file.container_instance_cloud_config.rendered}"
 
+  root_block_device_type = "gp2"
+  root_block_device_size = "10
+
   health_check_grace_period = "600"
   desired_capacity          = "1"
   min_size                  = "0"
@@ -49,6 +52,8 @@ module "container_service_cluster" {
 
 - `vpc_id` - ID of VPC meant to house cluster
 - `ami_id` - Cluster instance Amazon Machine Image (AMI) ID
+- `root_block_device_type` - Instance root block device type (default: `gp2`)
+- `root_block_device_size` - Instance root block device size in gigabytes (default: `8`)
 - `instance_type` - Instance type for cluster instances (default: `t2.micro`)
 - `key_name` - EC2 Key pair name
 - `cloud_config` - `cloud-config` user data supplied to launch configuration for cluster nodes

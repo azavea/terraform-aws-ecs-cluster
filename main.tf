@@ -73,6 +73,11 @@ resource "aws_launch_configuration" "container_instance" {
     create_before_destroy = true
   }
 
+  root_block_device {
+    volume_type = "${var.root_block_device_type}"
+    volume_size = "${var.root_block_device_size}"
+  }
+
   iam_instance_profile = "${aws_iam_instance_profile.container_instance.name}"
   image_id             = "${var.ami_id}"
   instance_type        = "${var.instance_type}"
