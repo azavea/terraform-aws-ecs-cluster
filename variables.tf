@@ -10,6 +10,14 @@ variable "vpc_id" {}
 
 variable "ami_id" {}
 
+variable "root_block_device_type" {
+  default = "gp2"
+}
+
+variable "root_block_device_size" {
+  default = "8"
+}
+
 variable "instance_type" {
   default = "t2.micro"
 }

@@ -73,6 +73,11 @@ resource "aws_launch_configuration" "container_instance" {
     create_before_destroy = true
   }
 
+  root_block_device {
+    volume_type = "${var.root_block_device_type}"
+    volume_size = "${var.root_block_device_size}"
+  }
+
   iam_instance_profile = "${aws_iam_instance_profile.container_instance.name}"
   image_id             = "${var.ami_id}"
   instance_type        = "${var.instance_type}"
@@ -152,7 +157,7 @@ resource "aws_cloudwatch_metric_alarm" "container_instance_high_cpu" {
     ClusterName = "${aws_ecs_cluster.container_instance.name}"
   }
 
-  alarm_description = "Scale up if CPUReservation is above 90% for 10 minutes"
+  alarm_description = "Scale up if CPUReservation is above N% for N duration"
   alarm_actions     = ["${aws_autoscaling_policy.container_instance_scale_up.arn}"]
 }
 
@@ -170,7 +175,7 @@ resource "aws_cloudwatch_metric_alarm" "container_instance_low_cpu" {
     ClusterName = "${aws_ecs_cluster.container_instance.name}"
   }
 
-  alarm_description = "Scale down if the CPUReservation is below 10% for 10 minutes"
+  alarm_description = "Scale down if the CPUReservation is below N% for N duration"
   alarm_actions     = ["${aws_autoscaling_policy.container_instance_scale_down.arn}"]
 
   depends_on = ["aws_cloudwatch_metric_alarm.container_instance_high_cpu"]
@@ -190,7 +195,7 @@ resource "aws_cloudwatch_metric_alarm" "container_instance_high_memory" {
     ClusterName = "${aws_ecs_cluster.container_instance.name}"
   }
 
-  alarm_description = "Scale up if the MemoryReservation is above 90% for 10 minutes"
+  alarm_description = "Scale up if the MemoryReservation is above N% for N duration"
   alarm_actions     = ["${aws_autoscaling_policy.container_instance_scale_up.arn}"]
 
   depends_on = ["aws_cloudwatch_metric_alarm.container_instance_low_cpu"]
@@ -210,7 +215,7 @@ resource "aws_cloudwatch_metric_alarm" "container_instance_low_memory" {
     ClusterName = "${aws_ecs_cluster.container_instance.name}"
   }
 
-  alarm_description = "Scale down if the MemoryReservation is below 10% for 10 minutes"
+  alarm_description = "Scale down if the MemoryReservation is below N% for N duration"
   alarm_actions     = ["${aws_autoscaling_policy.container_instance_scale_down.arn}"]
 
   depends_on = ["aws_cloudwatch_metric_alarm.container_instance_high_memory"]
