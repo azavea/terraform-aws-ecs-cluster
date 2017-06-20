@@ -1,3 +1,7 @@
+## 0.4.0
+- Create ECS Service and Autoscaling IAM roles.
+- Output IAM Role names and ARNs.
+
 ## 0.3.0
 
 - Add support for customizing launch configuration `root_block_device`.
