@@ -85,4 +85,8 @@ module "container_service_cluster" {
 - `id` - The container service cluster ID
 - `name` - The container service cluster name
 - `container_instance_security_group_id` - Security group ID of the EC2 container instances
-- `container_instance_ecs_for_ec2_service_role` - Name of IAM role associated with EC2 container instances
+- `container_instance_ecs_for_ec2_service_role_name` - Name of IAM role associated with EC2 container instances
+- `ecs_service_role_name` - Name of IAM role for use with ECS services
+- `ecs_autoscale_role_name` - Name of IAM role for use with ECS service autoscaling
+- `ecs_service_role_arn` - ARN of IAM role for use with ECS services
+- `ecs_autoscale_role_arn` - ARN of IAM role for use with ECS service autoscaling
