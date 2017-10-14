@@ -128,6 +128,7 @@ resource "aws_launch_configuration" "container_instance" {
     volume_size = "${var.root_block_device_size}"
   }
 
+  name_prefix          = "lc${var.environment}ContainerInstance-"
   iam_instance_profile = "${aws_iam_instance_profile.container_instance.name}"
   image_id             = "${var.ami_id}"
   instance_type        = "${var.instance_type}"
@@ -137,6 +138,10 @@ resource "aws_launch_configuration" "container_instance" {
 }
 
 resource "aws_autoscaling_group" "container_instance" {
+  lifecycle {
+    create_before_destroy = true
+  }
+
   name                      = "asg${var.environment}ContainerInstance"
   launch_configuration      = "${aws_launch_configuration.container_instance.name}"
   health_check_grace_period = "${var.health_check_grace_period}"
