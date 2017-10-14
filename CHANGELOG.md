@@ -1,4 +1,10 @@
+## 0.5.0
+
+- Add `name_prefix` to launch configuration.
+- Ensure that ASG has `create_before_destory` lifecycle block.
+
 ## 0.4.0
+
 - Create ECS Service and Autoscaling IAM roles.
 - Output IAM Role names and ARNs.
 
