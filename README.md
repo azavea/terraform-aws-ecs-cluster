@@ -14,7 +14,7 @@ data "template_file" "container_instance_cloud_config" {
 }
 
 module "container_service_cluster" {
-  source = "github.com/azavea/terraform-aws-ecs-cluster?ref=0.1.0"
+  source = "github.com/azavea/terraform-aws-ecs-cluster?ref=0.5.0"
 
   vpc_id        = "vpc-20f74844"
   ami_id        = "ami-b2df2ca4"
@@ -23,7 +23,7 @@ module "container_service_cluster" {
   cloud_config  = "${data.template_file.container_instance_cloud_config.rendered}"
 
   root_block_device_type = "gp2"
-  root_block_device_size = "10
+  root_block_device_size = "10"
 
   health_check_grace_period = "600"
   desired_capacity          = "1"
