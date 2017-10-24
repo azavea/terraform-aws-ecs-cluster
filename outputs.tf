@@ -29,3 +29,7 @@ output "ecs_service_role_arn" {
 output "ecs_autoscale_role_arn" {
   value = "${aws_iam_role.ecs_autoscale_role.arn}"
 }
+
+output "container_instance_ecs_for_ec2_service_role_arn" {
+  value = "${aws_iam_role.container_instance_ec2.arn}"
+}
