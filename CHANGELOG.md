@@ -1,3 +1,7 @@
+## 0.6.0
+
+- Output ARN for Container Instance service role
+
 ## 0.5.0
 
 - Add `name_prefix` to launch configuration.
