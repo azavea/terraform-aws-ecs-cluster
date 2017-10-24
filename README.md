@@ -90,3 +90,4 @@ module "container_service_cluster" {
 - `ecs_autoscale_role_name` - Name of IAM role for use with ECS service autoscaling
 - `ecs_service_role_arn` - ARN of IAM role for use with ECS services
 - `ecs_autoscale_role_arn` - ARN of IAM role for use with ECS service autoscaling
+- `container_instance_ecs_for_ec2_service_role_arn` - ARN of IAM role associated with EC2 container instances
