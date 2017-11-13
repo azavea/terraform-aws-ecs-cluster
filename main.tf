@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "ecs_assume_role" {
 }
 
 resource "aws_iam_role" "ecs_service_role" {
-  name               = "ecs${var.environment}ServiceRole"
+  name               = "ecs${title(var.environment)}ServiceRole"
   assume_role_policy = "${data.aws_iam_policy_document.ecs_assume_role.json}"
 }
 
@@ -70,7 +70,7 @@ data "aws_iam_policy_document" "ecs_autoscale_assume_role" {
 }
 
 resource "aws_iam_role" "ecs_autoscale_role" {
-  name               = "ecs${var.environment}AutoscaleRole"
+  name               = "ecs${title(var.environment)}AutoscaleRole"
   assume_role_policy = "${data.aws_iam_policy_document.ecs_autoscale_assume_role.json}"
 }
 
@@ -128,7 +128,7 @@ resource "aws_launch_configuration" "container_instance" {
     volume_size = "${var.root_block_device_size}"
   }
 
-  name_prefix          = "lc${var.environment}ContainerInstance-"
+  name_prefix          = "lc${title(var.environment)}ContainerInstance-"
   iam_instance_profile = "${aws_iam_instance_profile.container_instance.name}"
   image_id             = "${var.ami_id}"
   instance_type        = "${var.instance_type}"
@@ -142,7 +142,7 @@ resource "aws_autoscaling_group" "container_instance" {
     create_before_destroy = true
   }
 
-  name                      = "asg${var.environment}ContainerInstance"
+  name                      = "asg${title(var.environment)}ContainerInstance"
   launch_configuration      = "${aws_launch_configuration.container_instance.name}"
   health_check_grace_period = "${var.health_check_grace_period}"
   health_check_type         = "EC2"
@@ -176,14 +176,14 @@ resource "aws_autoscaling_group" "container_instance" {
 # ECS resources
 #
 resource "aws_ecs_cluster" "container_instance" {
-  name = "ecs${var.environment}Cluster"
+  name = "ecs${title(var.environment)}Cluster"
 }
 
 #
 # CloudWatch resources
 #
 resource "aws_autoscaling_policy" "container_instance_scale_up" {
-  name                   = "asgScalingPolicy${var.environment}ClusterScaleUp"
+  name                   = "asgScalingPolicy${title(var.environment)}ClusterScaleUp"
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = "${var.scale_up_cooldown_seconds}"
@@ -191,7 +191,7 @@ resource "aws_autoscaling_policy" "container_instance_scale_up" {
 }
 
 resource "aws_autoscaling_policy" "container_instance_scale_down" {
-  name                   = "asgScalingPolicy${var.environment}ClusterScaleDown"
+  name                   = "asgScalingPolicy${title(var.environment)}ClusterScaleDown"
   scaling_adjustment     = -1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = "${var.scale_down_cooldown_seconds}"
@@ -199,7 +199,7 @@ resource "aws_autoscaling_policy" "container_instance_scale_down" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "container_instance_high_cpu" {
-  alarm_name          = "alarm${var.environment}ClusterCPUReservationHigh"
+  alarm_name          = "alarm${title(var.environment)}ClusterCPUReservationHigh"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "${var.high_cpu_evaluation_periods}"
   metric_name         = "CPUReservation"
@@ -217,7 +217,7 @@ resource "aws_cloudwatch_metric_alarm" "container_instance_high_cpu" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "container_instance_low_cpu" {
-  alarm_name          = "alarm${var.environment}ClusterCPUReservationLow"
+  alarm_name          = "alarm${title(var.environment)}ClusterCPUReservationLow"
   comparison_operator = "LessThanOrEqualToThreshold"
   evaluation_periods  = "${var.low_cpu_evaluation_periods}"
   metric_name         = "CPUReservation"
@@ -237,7 +237,7 @@ resource "aws_cloudwatch_metric_alarm" "container_instance_low_cpu" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "container_instance_high_memory" {
-  alarm_name          = "alarm${var.environment}ClusterMemoryReservationHigh"
+  alarm_name          = "alarm${title(var.environment)}ClusterMemoryReservationHigh"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "${var.high_memory_evaluation_periods}"
   metric_name         = "MemoryReservation"
@@ -257,7 +257,7 @@ resource "aws_cloudwatch_metric_alarm" "container_instance_high_memory" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "container_instance_low_memory" {
-  alarm_name          = "alarm${var.environment}ClusterMemoryReservationLow"
+  alarm_name          = "alarm${title(var.environment)}ClusterMemoryReservationLow"
   comparison_operator = "LessThanOrEqualToThreshold"
   evaluation_periods  = "${var.low_memory_evaluation_periods}"
   metric_name         = "MemoryReservation"
