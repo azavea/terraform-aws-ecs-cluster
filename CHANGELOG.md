@@ -1,6 +1,10 @@
+## 0.7.0
+
+- Use `title` function to ensure that resource names are in CamelCase, even if `var.environment` is lowercase.
+
 ## 0.6.0
 
-- Output ARN for Container Instance service role
+- Output ARN for Container Instance service role.
 
 ## 0.5.0
 
