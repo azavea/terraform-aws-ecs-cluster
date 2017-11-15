@@ -8,7 +8,17 @@ variable "environment" {
 
 variable "vpc_id" {}
 
-variable "ami_id" {}
+variable "ami_id" {
+  default = "ami-6944c513"
+}
+
+variable "ami_owners" {
+  default = ["self", "amazon", "aws-marketplace"]
+}
+
+variable "lookup_latest_ami" {
+  default = false
+}
 
 variable "root_block_device_type" {
   default = "gp2"
