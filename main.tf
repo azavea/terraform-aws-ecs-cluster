@@ -118,6 +118,46 @@ data "template_cloudinit_config" "container_instance_cloud_config" {
   }
 }
 
+data "aws_ami" "ecs_ami" {
+  count       = "${var.lookup_latest_ami ? 1 : 0}"
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn-ami-*-amazon-ecs-optimized"]
+  }
+
+  filter {
+    name   = "owner-alias"
+    values = ["${var.ami_owners}"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+data "aws_ami" "user_ami" {
+  count       = "${var.lookup_latest_ami ? 0 : 1}"
+  most_recent = true
+
+  filter {
+    name   = "owner-alias"
+    values = ["${var.ami_owners}"]
+  }
+
+  filter {
+    name   = "image-id"
+    values = ["${var.ami_id}"]
+  }
+}
+
 resource "aws_launch_configuration" "container_instance" {
   lifecycle {
     create_before_destroy = true
@@ -130,11 +170,15 @@ resource "aws_launch_configuration" "container_instance" {
 
   name_prefix          = "lc${title(var.environment)}ContainerInstance-"
   iam_instance_profile = "${aws_iam_instance_profile.container_instance.name}"
-  image_id             = "${var.ami_id}"
-  instance_type        = "${var.instance_type}"
-  key_name             = "${var.key_name}"
-  security_groups      = ["${aws_security_group.container_instance.id}"]
-  user_data            = "${data.template_cloudinit_config.container_instance_cloud_config.rendered}"
+
+  # Using join() is a workaround for depending on conditional resources.
+  # https://github.com/hashicorp/terraform/issues/2831#issuecomment-298751019
+  image_id = "${var.lookup_latest_ami ? join("", data.aws_ami.ecs_ami.*.image_id) : join("", data.aws_ami.user_ami.*.image_id)}"
+
+  instance_type   = "${var.instance_type}"
+  key_name        = "${var.key_name}"
+  security_groups = ["${aws_security_group.container_instance.id}"]
+  user_data       = "${data.template_cloudinit_config.container_instance_cloud_config.rendered}"
 }
 
 resource "aws_autoscaling_group" "container_instance" {
