@@ -7,7 +7,7 @@ A Terraform module to create an Amazon Web Services (AWS) EC2 Container Service 
 ```hcl
 data "template_file" "container_instance_cloud_config" {
   template = "${file("cloud-config/container-instance.yml.tpl")}"
- 
+
   vars {
     environment = "${var.environment}"
   }
@@ -30,6 +30,8 @@ module "container_service_cluster" {
   min_size                  = "0"
   max_size                  = "1"
 
+  use_lb = false
+
   enabled_metrics = [
     "GroupMinSize",
     "GroupMaxSize",
@@ -48,6 +50,11 @@ module "container_service_cluster" {
 }
 ```
 
+To allow zero downtime upgrade of the cluster instances, the autoscaling group needs to be associated with an ELB or an ALB.
+That can be achieved by setting the input variable `use_lb = true` and then, depending on the type of load balancer, setting:
+* `elb_names = ["name of ELB"]` for ELBs
+* `alb_target_group_arns = ["arn:aws:elasticloadbalancing:AAAA:BBBB:targetgroup/CCCC/DDDD"]` for ALBs
+
 ## Variables
 
 - `vpc_id` - ID of VPC meant to house cluster
@@ -61,6 +68,7 @@ module "container_service_cluster" {
 - `desired_capacity` - Number of EC2 instances that should be running in cluster (default: `1`)
 - `min_size` - Minimum number of EC2 instances in cluster (default: `0`)
 - `max_size` - Maximum number of EC2 instances in cluster (default: `1`)
+- `use_lb` - Flag to determine if autoscaling group will be assiciated with a load balancer (default: `false`)
 - `enabled_metrics` - A list of metrics to gather for the cluster
 - `private_subnet_ids` - A list of private subnet IDs to launch cluster instances
 - `scale_up_cooldown_seconds` - Number of seconds before allowing another scale up activity (default: `300`)

@@ -145,13 +145,16 @@ resource "aws_autoscaling_group" "container_instance" {
   name                      = "asg${title(var.environment)}ContainerInstance"
   launch_configuration      = "${aws_launch_configuration.container_instance.name}"
   health_check_grace_period = "${var.health_check_grace_period}"
-  health_check_type         = "EC2"
+  health_check_type         = "${var.use_lb ? "ELB" : "EC2"}"
   desired_capacity          = "${var.desired_capacity}"
   termination_policies      = ["OldestLaunchConfiguration", "Default"]
   min_size                  = "${var.min_size}"
   max_size                  = "${var.max_size}"
   enabled_metrics           = ["${var.enabled_metrics}"]
   vpc_zone_identifier       = ["${var.private_subnet_ids}"]
+
+  load_balancers    = "${var.elb_names}"
+  target_group_arns = "${var.alb_target_group_arns}"
 
   tag {
     key                 = "Name"
