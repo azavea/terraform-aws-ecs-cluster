@@ -14,6 +14,30 @@ data "aws_iam_policy_document" "container_instance_ec2_assume_role" {
   }
 }
 
+resource "aws_iam_policy" "container_instance_ecr" {
+  name        = "ecs${title(var.environment)}ContainerInstanceECR"
+  path        = "/"
+  description = "Policy to allow ${title(var.environment)} container instances access to ECR"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:BatchGetImage",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:GetAuthorizationToken"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
+
 resource "aws_iam_role" "container_instance_ec2" {
   name               = "${var.environment}ContainerInstanceProfile"
   assume_role_policy = "${data.aws_iam_policy_document.container_instance_ec2_assume_role.json}"
@@ -22,6 +46,11 @@ resource "aws_iam_role" "container_instance_ec2" {
 resource "aws_iam_role_policy_attachment" "ec2_service_role" {
   role       = "${aws_iam_role.container_instance_ec2.name}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_role_policy_attachment" "ecr_service_role" {
+  role       = "${aws_iam_role.container_instance_ec2.name}"
+  policy_arn = "${aws_iam_policy.container_instance_ecr.arn}"
 }
 
 resource "aws_iam_instance_profile" "container_instance" {
