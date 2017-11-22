@@ -51,7 +51,9 @@ module "container_service_cluster" {
 ## Variables
 
 - `vpc_id` - ID of VPC meant to house cluster
-- `ami_id` - Cluster instance Amazon Machine Image (AMI) ID
+- `lookup_latest_ami` - lookup the latest Amazon-owned ECS AMI. If this variable is `true`, the latest ECS AMI will be used, even if `ami_id` is provided (default: `false`).
+- `ami_id` - Cluster instance Amazon Machine Image (AMI) ID. If `lookup_latest_ami` is `true`, this variable will be silently ignored.
+- `ami_owners` - List of accounts that own the AMI (default: `self, amazon, aws-marketplace`)
 - `root_block_device_type` - Instance root block device type (default: `gp2`)
 - `root_block_device_size` - Instance root block device size in gigabytes (default: `8`)
 - `instance_type` - Instance type for cluster instances (default: `t2.micro`)

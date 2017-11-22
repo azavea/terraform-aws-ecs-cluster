@@ -1,3 +1,7 @@
+## 0.8.0
+
+Add support for automatically using the latest ECS AMI in launch configuration.
+
 ## 0.7.0
 
 - Use `title` function to ensure that resource names are in CamelCase, even if `var.environment` is lowercase.
