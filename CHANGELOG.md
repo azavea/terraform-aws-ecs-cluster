@@ -1,6 +1,6 @@
 ## 0.8.0
 
-Add support for automatically using the latest ECS AMI in launch configuration.
+- Add support for automatically using the latest ECS AMI in launch configuration.
 
 ## 0.7.0
 
