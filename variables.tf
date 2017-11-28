@@ -126,3 +126,15 @@ variable "low_memory_period_seconds" {
 variable "low_memory_threshold_percent" {
   default = "10"
 }
+
+variable "use_lb" {
+  default = false
+}
+
+variable "alb_target_group_arns" {
+  default = []
+}
+
+variable "elb_names" {
+  default = []
+}
