@@ -113,8 +113,8 @@ data "template_cloudinit_config" "container_instance_cloud_config" {
   }
 
   part {
-    content_type = "text/cloud-config"
-    content      = "${var.cloud_config}"
+    content_type = "${var.cloud_config_content_type}"
+    content      = "${var.cloud_config_content}"
   }
 }
 
