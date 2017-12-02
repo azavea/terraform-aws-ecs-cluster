@@ -8,6 +8,22 @@ variable "environment" {
 
 variable "vpc_id" {}
 
+variable "termination_policies" {
+  default = ["OldestLaunchConfiguration", "Default"]
+}
+
+variable "rolling_update_max_batch_size" {
+  default = 1
+}
+
+variable "rolling_update_pause_time" {
+  default = "PT5M"
+}
+
+variable "rolling_update_wait_on_signal" {
+  default = false
+}
+
 variable "ami_id" {
   default = "ami-6944c513"
 }
