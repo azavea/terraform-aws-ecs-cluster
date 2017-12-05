@@ -146,11 +146,8 @@ data "aws_ami" "ecs_ami" {
 data "aws_ami" "user_ami" {
   count       = "${var.lookup_latest_ami ? 0 : 1}"
   most_recent = true
+  owners      = ["${var.ami_owners}"]
 
-  filter {
-    name   = "owner-alias"
-    values = ["${var.ami_owners}"]
-  }
 
   filter {
     name   = "image-id"
