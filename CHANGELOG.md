@@ -1,6 +1,10 @@
+## 0.8.1
+
+- Use `owners` argument for `aws_ami` instead of owner-alias filter.
+
 ## 0.8.0
 
-Add support for automatically using the latest ECS AMI in launch configuration.
+- Add support for automatically using the latest ECS AMI in launch configuration.
 
 ## 0.7.0
 
