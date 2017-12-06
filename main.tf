@@ -176,39 +176,71 @@ resource "aws_launch_configuration" "container_instance" {
   user_data       = "${data.template_cloudinit_config.container_instance_cloud_config.rendered}"
 }
 
-resource "aws_autoscaling_group" "container_instance" {
+# In-depth discussion on the rolling update mechanism found in: https://github.com/hashicorp/terraform/issues/1552#issuecomment-191847434
+# AWS docuemntation here: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatepolicy.html
+resource "aws_cloudformation_stack" "autoscaling_group" {
   lifecycle {
     create_before_destroy = true
   }
 
-  name                      = "asg${title(var.environment)}ContainerInstance"
-  launch_configuration      = "${aws_launch_configuration.container_instance.name}"
-  health_check_grace_period = "${var.health_check_grace_period}"
-  health_check_type         = "EC2"
-  desired_capacity          = "${var.desired_capacity}"
-  termination_policies      = ["OldestLaunchConfiguration", "Default"]
-  min_size                  = "${var.min_size}"
-  max_size                  = "${var.max_size}"
-  enabled_metrics           = ["${var.enabled_metrics}"]
-  vpc_zone_identifier       = ["${var.private_subnet_ids}"]
+  name = "cfStackAsg${title(var.environment)}ContainerInstance"
 
-  tag {
-    key                 = "Name"
-    value               = "ContainerInstance"
-    propagate_at_launch = true
+  template_body = <<EOF
+{
+  "Resources": {
+    "asg${title(var.environment)}ContainerInstance": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "LaunchConfigurationName": "${aws_launch_configuration.container_instance.name}",
+        "HealthCheckGracePeriod": "${var.health_check_grace_period}",
+        "HealthCheckType": "EC2",
+        "DesiredCapacity": "${var.desired_capacity}",
+        "TerminationPolicies": ["${join("\",\"", var.termination_policies)}"],
+        "MaxSize": "${var.max_size}",
+        "MinSize": "${var.min_size}",
+        "VPCZoneIdentifier": ["${join("\",\"", var.private_subnet_ids)}"],
+        "MetricsCollection": [
+            {
+                "Granularity" : "1Minute",
+                "Metrics" : ["${join("\",\"", var.enabled_metrics)}"]
+            }
+        ],
+        "Tags": [
+            {
+               "Key" : "Name",
+               "Value" : "ContainerInstance",
+               "PropagateAtLaunch" : true
+            },
+            {
+               "Key" : "Project",
+               "Value" : "${var.project}",
+               "PropagateAtLaunch" : true
+            },
+            {
+               "Key" : "Environment",
+               "Value" : "${var.environment}",
+               "PropagateAtLaunch" : true
+            }
+        ]
+      },
+      "UpdatePolicy": {
+        "AutoScalingRollingUpdate": {
+          "MinInstancesInService": "${var.min_size}",
+          "MaxBatchSize": "${var.rolling_update_max_batch_size}",
+          "WaitOnResourceSignals": "${var.rolling_update_wait_on_signal ? "true" : "false"}",
+          "PauseTime": "${var.rolling_update_pause_time}"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "name": {
+      "Description": "The name of the auto scaling group",
+       "Value": {"Ref": "asg${title(var.environment)}ContainerInstance"}
+    }
   }
-
-  tag {
-    key                 = "Project"
-    value               = "${var.project}"
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "Environment"
-    value               = "${var.environment}"
-    propagate_at_launch = true
-  }
+}
+EOF
 }
 
 #
@@ -226,7 +258,7 @@ resource "aws_autoscaling_policy" "container_instance_scale_up" {
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = "${var.scale_up_cooldown_seconds}"
-  autoscaling_group_name = "${aws_autoscaling_group.container_instance.name}"
+  autoscaling_group_name = "${aws_cloudformation_stack.autoscaling_group.outputs["name"]}"
 }
 
 resource "aws_autoscaling_policy" "container_instance_scale_down" {
@@ -234,7 +266,7 @@ resource "aws_autoscaling_policy" "container_instance_scale_down" {
   scaling_adjustment     = -1
   adjustment_type        = "ChangeInCapacity"
   cooldown               = "${var.scale_down_cooldown_seconds}"
-  autoscaling_group_name = "${aws_autoscaling_group.container_instance.name}"
+  autoscaling_group_name = "${aws_cloudformation_stack.autoscaling_group.outputs["name"]}"
 }
 
 resource "aws_cloudwatch_metric_alarm" "container_instance_high_cpu" {

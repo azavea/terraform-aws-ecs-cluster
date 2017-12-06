@@ -2,12 +2,15 @@
 
 A Terraform module to create an Amazon Web Services (AWS) EC2 Container Service (ECS) cluster.
 
+This module leverages CloudFormation stacks to ease maintenance on the cluster instances.
+For more details about rolling update see "AutoScalingRollingUpdate Policy" in http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatepolicy.html.
+
 ## Usage
 
 ```hcl
 data "template_file" "container_instance_cloud_config" {
   template = "${file("cloud-config/container-instance.yml.tpl")}"
- 
+
   vars {
     environment = "${var.environment}"
   }
@@ -63,6 +66,10 @@ module "container_service_cluster" {
 - `desired_capacity` - Number of EC2 instances that should be running in cluster (default: `1`)
 - `min_size` - Minimum number of EC2 instances in cluster (default: `0`)
 - `max_size` - Maximum number of EC2 instances in cluster (default: `1`)
+- `termination_policies` - Policies to use when deciding which instance to terminate (default: `["OldestLaunchConfiguration", "Default"]`)
+- `rolling_update_max_batch_size` - Max number of instances to update at the same time (default: `1`)
+- `rolling_update_pause_time` - How much time to wait between updating instances (default: `PT5M` - 5 minutes)
+- `rolling_update_wait_on_signal` - Should rolling update wait for a signal sent from each new instance before moving on to the next
 - `enabled_metrics` - A list of metrics to gather for the cluster
 - `private_subnet_ids` - A list of private subnet IDs to launch cluster instances
 - `scale_up_cooldown_seconds` - Number of seconds before allowing another scale up activity (default: `300`)
