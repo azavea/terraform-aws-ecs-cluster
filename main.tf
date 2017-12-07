@@ -113,8 +113,8 @@ data "template_cloudinit_config" "container_instance_cloud_config" {
   }
 
   part {
-    content_type = "text/cloud-config"
-    content      = "${var.cloud_config}"
+    content_type = "${var.cloud_config_content_type}"
+    content      = "${var.cloud_config_content}"
   }
 }
 
@@ -144,13 +144,8 @@ data "aws_ami" "ecs_ami" {
 }
 
 data "aws_ami" "user_ami" {
-  count       = "${var.lookup_latest_ami ? 0 : 1}"
-  most_recent = true
-
-  filter {
-    name   = "owner-alias"
-    values = ["${var.ami_owners}"]
-  }
+  count  = "${var.lookup_latest_ami ? 0 : 1}"
+  owners = ["${var.ami_owners}"]
 
   filter {
     name   = "image-id"

@@ -7,7 +7,7 @@ A Terraform module to create an Amazon Web Services (AWS) EC2 Container Service 
 ```hcl
 data "template_file" "container_instance_cloud_config" {
   template = "${file("cloud-config/container-instance.yml.tpl")}"
- 
+
   vars {
     environment = "${var.environment}"
   }
@@ -58,7 +58,8 @@ module "container_service_cluster" {
 - `root_block_device_size` - Instance root block device size in gigabytes (default: `8`)
 - `instance_type` - Instance type for cluster instances (default: `t2.micro`)
 - `key_name` - EC2 Key pair name
-- `cloud_config` - `cloud-config` user data supplied to launch configuration for cluster nodes
+- `cloud_config_content` - user data supplied to launch configuration for cluster nodes
+- `cloud_config_content_type` - the type of configuration being passed in as user data, see [EC2 user guide](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonLinuxAMIBasics.html#CloudInit) for a list of possible types (default: `text/cloud-config`)
 - `health_check_grace_period` - Time in seconds after container instance comes into service before checking health (default: `600`)
 - `desired_capacity` - Number of EC2 instances that should be running in cluster (default: `1`)
 - `min_size` - Minimum number of EC2 instances in cluster (default: `0`)
