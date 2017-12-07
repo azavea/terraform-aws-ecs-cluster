@@ -34,7 +34,11 @@ variable "instance_type" {
 
 variable "key_name" {}
 
-variable "cloud_config" {}
+variable "cloud_config_content" {}
+
+variable "cloud_config_content_type" {
+  default = "text/cloud-config"
+}
 
 variable "health_check_grace_period" {
   default = "600"
