@@ -1,3 +1,7 @@
+## 1.1.0
+
+- Add output for Autoscaling Group name via `container_instance_autoscaling_group_name`.
+
 ## 1.0.0
 
 - Renames `cloud_config` to `cloud_config_content`.

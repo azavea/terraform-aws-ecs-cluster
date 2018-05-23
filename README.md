@@ -20,7 +20,7 @@ module "container_service_cluster" {
   ami_id        = "ami-b2df2ca4"
   instance_type = "t2.micro"
   key_name      = "hector"
-  cloud_config  = "${data.template_file.container_instance_cloud_config.rendered}"
+  cloud_config_content  = "${data.template_file.container_instance_cloud_config.rendered}"
 
   root_block_device_type = "gp2"
   root_block_device_size = "10"
@@ -94,3 +94,4 @@ module "container_service_cluster" {
 - `ecs_service_role_arn` - ARN of IAM role for use with ECS services
 - `ecs_autoscale_role_arn` - ARN of IAM role for use with ECS service autoscaling
 - `container_instance_ecs_for_ec2_service_role_arn` - ARN of IAM role associated with EC2 container instances
+- `container_instance_autoscaling_group_name` - Name of container instance Autoscaling Group
