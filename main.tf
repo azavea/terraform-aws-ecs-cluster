@@ -69,14 +69,8 @@ data "aws_iam_policy_document" "ecs_autoscale_assume_role" {
   }
 }
 
-resource "aws_iam_role" "ecs_autoscale_role" {
-  name               = "ecs${title(var.environment)}AutoscaleRole"
-  assume_role_policy = "${data.aws_iam_policy_document.ecs_autoscale_assume_role.json}"
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_service_autoscaling_role" {
-  role       = "${aws_iam_role.ecs_autoscale_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceAutoscaleRole"
+data "aws_iam_role" "ecs_autoscale_role" {
+  name = "AWSServiceRoleForApplicationAutoScaling_ECSService"
 }
 
 #
