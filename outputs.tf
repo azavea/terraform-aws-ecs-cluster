@@ -18,20 +18,12 @@ output "ecs_service_role_name" {
   value = "${aws_iam_role.ecs_service_role.name}"
 }
 
-output "ecs_autoscale_role_name" {
-  value = "${aws_iam_role.ecs_autoscale_role.name}"
-}
-
 output "container_instance_autoscaling_group_name" {
   value = "${aws_autoscaling_group.container_instance.name}"
 }
 
 output "ecs_service_role_arn" {
   value = "${aws_iam_role.ecs_service_role.arn}"
-}
-
-output "ecs_autoscale_role_arn" {
-  value = "${aws_iam_role.ecs_autoscale_role.arn}"
 }
 
 output "container_instance_ecs_for_ec2_service_role_arn" {
