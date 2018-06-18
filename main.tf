@@ -69,10 +69,6 @@ data "aws_iam_policy_document" "ecs_autoscale_assume_role" {
   }
 }
 
-data "aws_iam_role" "ecs_autoscale_role" {
-  name = "AWSServiceRoleForApplicationAutoScaling_ECSService"
-}
-
 #
 # Security group resources
 #
