@@ -32,6 +32,10 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
+variable "unlimited_cpu" {
+  default = false
+}
+
 variable "key_name" {}
 
 variable "cloud_config_content" {}
