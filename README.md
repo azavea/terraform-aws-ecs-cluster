@@ -4,6 +4,10 @@ A Terraform module to create an Amazon Web Services (AWS) EC2 Container Service 
 
 ## Usage
 
+This module creates a security group that gets associated with the launch configuration for the ECS cluster Auto Scaling group. By default, the security group contains no rules. In order for network traffic to flow egress or ingress (including communication with ECS itself), you must associate all of the appropriate `aws_security_group_rule` resources with the `container_instance_security_group_id` module output.
+
+See below for an example.
+
 ```hcl
 data "template_file" "container_instance_cloud_config" {
   template = "${file("cloud-config/container-instance.yml.tpl")}"
@@ -45,6 +49,26 @@ module "container_service_cluster" {
 
   project     = "Something"
   environment = "Staging"
+}
+
+resource "aws_security_group_rule" "container_instance_http_egress" {
+  type        = "egress"
+  from_port   = 80
+  to_port     = 80
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = "${module.container_service_cluster.container_instance_security_group_id}"
+}
+
+resource "aws_security_group_rule" "container_instance_https_egress" {
+  type        = "egress"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+
+  security_group_id = "${module.container_service_cluster.container_instance_security_group_id}"
 }
 ```
 
