@@ -176,7 +176,7 @@ resource "aws_launch_template" "container_instance" {
   user_data                            = "${base64encode(data.template_cloudinit_config.container_instance_cloud_config.rendered)}"
 
   monitoring {
-    enabled = true
+    enabled = "${var.detailed_monitoring}"
   }
 }
 

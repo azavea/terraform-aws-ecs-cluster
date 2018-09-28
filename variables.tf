@@ -36,6 +36,10 @@ variable "unlimited_cpu" {
   default = false
 }
 
+variable "detailed_monitoring" {
+  default = false
+}
+
 variable "key_name" {}
 
 variable "cloud_config_content" {}
