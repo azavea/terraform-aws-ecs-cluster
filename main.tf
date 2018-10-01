@@ -154,7 +154,7 @@ resource "aws_launch_template" "container_instance" {
   }
 
   credit_specification {
-    cpu_credits = "${var.unlimited_cpu ? "unlimited" : "standard"}"
+    cpu_credits = "${var.cpu_credit_specification}"
   }
 
   disable_api_termination = false

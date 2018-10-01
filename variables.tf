@@ -32,8 +32,8 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
-variable "unlimited_cpu" {
-  default = false
+variable "cpu_credit_specification" {
+  default = "standard"
 }
 
 variable "detailed_monitoring" {
