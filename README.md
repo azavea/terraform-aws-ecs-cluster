@@ -81,6 +81,8 @@ resource "aws_security_group_rule" "container_instance_https_egress" {
 - `root_block_device_type` - Instance root block device type (default: `gp2`)
 - `root_block_device_size` - Instance root block device size in gigabytes (default: `8`)
 - `instance_type` - Instance type for cluster instances (default: `t2.micro`)
+- `cpu_credit_specification` - Credit option for CPU usage. Can be ["standard"](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances-standard-mode.html) or ["unlimited"](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances-unlimited-mode.html). (default: `standard`).
+- `detailed_monitoring` - If this variable is `true`, then [detailed monitoring](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html) will be enabled on the instance. (default: `false`)
 - `key_name` - EC2 Key pair name
 - `cloud_config_content` - user data supplied to launch configuration for cluster nodes
 - `cloud_config_content_type` - the type of configuration being passed in as user data, see [EC2 user guide](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonLinuxAMIBasics.html#CloudInit) for a list of possible types (default: `text/cloud-config`)
