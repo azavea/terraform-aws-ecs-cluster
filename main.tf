@@ -69,16 +69,6 @@ data "aws_iam_policy_document" "ecs_autoscale_assume_role" {
   }
 }
 
-resource "aws_iam_role" "ecs_autoscale_role" {
-  name               = "ecs${title(var.environment)}AutoscaleRole"
-  assume_role_policy = "${data.aws_iam_policy_document.ecs_autoscale_assume_role.json}"
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_service_autoscaling_role" {
-  role       = "${aws_iam_role.ecs_autoscale_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceAutoscaleRole"
-}
-
 #
 # Security group resources
 #
@@ -153,27 +143,41 @@ data "aws_ami" "user_ami" {
   }
 }
 
-resource "aws_launch_configuration" "container_instance" {
-  lifecycle {
-    create_before_destroy = true
+resource "aws_launch_template" "container_instance" {
+  block_device_mappings {
+    device_name = "${var.lookup_latest_ami ? join("", data.aws_ami.ecs_ami.*.root_device_name) : join("", data.aws_ami.user_ami.*.root_device_name)}"
+
+    ebs {
+      volume_type = "${var.root_block_device_type}"
+      volume_size = "${var.root_block_device_size}"
+    }
   }
 
-  root_block_device {
-    volume_type = "${var.root_block_device_type}"
-    volume_size = "${var.root_block_device_size}"
+  credit_specification {
+    cpu_credits = "${var.cpu_credit_specification}"
   }
 
-  name_prefix          = "lc${title(var.environment)}ContainerInstance-"
-  iam_instance_profile = "${aws_iam_instance_profile.container_instance.name}"
+  disable_api_termination = false
+
+  name_prefix = "lt${title(var.environment)}ContainerInstance-"
+
+  iam_instance_profile {
+    name = "${aws_iam_instance_profile.container_instance.name}"
+  }
 
   # Using join() is a workaround for depending on conditional resources.
   # https://github.com/hashicorp/terraform/issues/2831#issuecomment-298751019
   image_id = "${var.lookup_latest_ami ? join("", data.aws_ami.ecs_ami.*.image_id) : join("", data.aws_ami.user_ami.*.image_id)}"
 
-  instance_type   = "${var.instance_type}"
-  key_name        = "${var.key_name}"
-  security_groups = ["${aws_security_group.container_instance.id}"]
-  user_data       = "${data.template_cloudinit_config.container_instance_cloud_config.rendered}"
+  instance_initiated_shutdown_behavior = "terminate"
+  instance_type                        = "${var.instance_type}"
+  key_name                             = "${var.key_name}"
+  vpc_security_group_ids               = ["${aws_security_group.container_instance.id}"]
+  user_data                            = "${base64encode(data.template_cloudinit_config.container_instance_cloud_config.rendered)}"
+
+  monitoring {
+    enabled = "${var.detailed_monitoring}"
+  }
 }
 
 resource "aws_autoscaling_group" "container_instance" {
@@ -181,8 +185,13 @@ resource "aws_autoscaling_group" "container_instance" {
     create_before_destroy = true
   }
 
-  name                      = "asg${title(var.environment)}ContainerInstance"
-  launch_configuration      = "${aws_launch_configuration.container_instance.name}"
+  name = "asg${title(var.environment)}ContainerInstance"
+
+  launch_template = {
+    id      = "${aws_launch_template.container_instance.id}"
+    version = "$$Latest"
+  }
+
   health_check_grace_period = "${var.health_check_grace_period}"
   health_check_type         = "EC2"
   desired_capacity          = "${var.desired_capacity}"

@@ -32,6 +32,14 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
+variable "cpu_credit_specification" {
+  default = "standard"
+}
+
+variable "detailed_monitoring" {
+  default = false
+}
+
 variable "key_name" {}
 
 variable "cloud_config_content" {}
