@@ -1,3 +1,11 @@
+## 2.0.0
+
+- Remove `ecs_autoscale_role_name` and `ecs_autoscale_role_arn` outputs.
+- Remove Autoscaling IAM role and policy attachment. 
+- Migrate to using `aws_launch_template` vs. `aws_launch_configuration` (requires an AWS provider `>= 1.34.0`).
+- Add `cpu_credit_specification` to enable support for EC2 burstable performance instances.
+- Add `detailed_monitoring` to enable support for CloudWatch detailed monitoring.
+
 ## 1.1.0
 
 - Add output for Autoscaling Group name via `container_instance_autoscaling_group_name`.
