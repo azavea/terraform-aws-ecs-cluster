@@ -45,7 +45,7 @@ module "container_service_cluster" {
     "GroupTotalInstances",
   ]
 
-  private_subnet_ids = [...]
+  subnet_ids = [...]
 
   project     = "Something"
   environment = "Staging"
@@ -91,7 +91,7 @@ resource "aws_security_group_rule" "container_instance_https_egress" {
 - `min_size` - Minimum number of EC2 instances in cluster (default: `0`)
 - `max_size` - Maximum number of EC2 instances in cluster (default: `1`)
 - `enabled_metrics` - A list of metrics to gather for the cluster
-- `private_subnet_ids` - A list of private subnet IDs to launch cluster instances
+- `subnet_ids` - A list of subnet IDs to launch cluster instances
 - `scale_up_cooldown_seconds` - Number of seconds before allowing another scale up activity (default: `300`)
 - `scale_down_cooldown_seconds` - Number of seconds before allowing another scale down activity (default: `300`)
 - `high_cpu_evaluation_periods` - Number of evaluation periods for high CPU alarm (default: `2`)

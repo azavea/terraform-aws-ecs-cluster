@@ -79,7 +79,7 @@ variable "enabled_metrics" {
   type = "list"
 }
 
-variable "private_subnet_ids" {
+variable "subnet_ids" {
   type = "list"
 }
 
