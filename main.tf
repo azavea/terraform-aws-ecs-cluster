@@ -199,7 +199,7 @@ resource "aws_autoscaling_group" "container_instance" {
   min_size                  = "${var.min_size}"
   max_size                  = "${var.max_size}"
   enabled_metrics           = ["${var.enabled_metrics}"]
-  vpc_zone_identifier       = ["${var.private_subnet_ids}"]
+  vpc_zone_identifier       = ["${var.subnet_ids}"]
 
   tag {
     key                 = "Name"
