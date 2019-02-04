@@ -83,58 +83,14 @@ variable "subnet_ids" {
   type = "list"
 }
 
-variable "scale_up_cooldown_seconds" {
-  default = "300"
+variable "target_tracking_metric_type" {
+  default = "ASGAverageCPUUtilization"
 }
 
-variable "scale_down_cooldown_seconds" {
-  default = "300"
+variable "ecs_cluster_cpu_reservation_target" {
+  default = "90.0"
 }
 
-variable "high_cpu_evaluation_periods" {
-  default = "2"
-}
-
-variable "high_cpu_period_seconds" {
-  default = "300"
-}
-
-variable "high_cpu_threshold_percent" {
-  default = "90"
-}
-
-variable "low_cpu_evaluation_periods" {
-  default = "2"
-}
-
-variable "low_cpu_period_seconds" {
-  default = "300"
-}
-
-variable "low_cpu_threshold_percent" {
-  default = "10"
-}
-
-variable "high_memory_evaluation_periods" {
-  default = "2"
-}
-
-variable "high_memory_period_seconds" {
-  default = "300"
-}
-
-variable "high_memory_threshold_percent" {
-  default = "90"
-}
-
-variable "low_memory_evaluation_periods" {
-  default = "2"
-}
-
-variable "low_memory_period_seconds" {
-  default = "300"
-}
-
-variable "low_memory_threshold_percent" {
-  default = "10"
+variable "ecs_cluster_memory_reservation_target" {
+  default = "90.0"
 }

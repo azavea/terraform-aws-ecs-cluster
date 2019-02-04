@@ -18,7 +18,7 @@ data "template_file" "container_instance_cloud_config" {
 }
 
 module "container_service_cluster" {
-  source = "github.com/azavea/terraform-aws-ecs-cluster?ref=2.0.0"
+  source = "github.com/azavea/terraform-aws-ecs-cluster?ref=3.0.0"
 
   vpc_id        = "vpc-20f74844"
   ami_id        = "ami-b2df2ca4"
@@ -92,20 +92,8 @@ resource "aws_security_group_rule" "container_instance_https_egress" {
 - `max_size` - Maximum number of EC2 instances in cluster (default: `1`)
 - `enabled_metrics` - A list of metrics to gather for the cluster
 - `subnet_ids` - A list of subnet IDs to launch cluster instances
-- `scale_up_cooldown_seconds` - Number of seconds before allowing another scale up activity (default: `300`)
-- `scale_down_cooldown_seconds` - Number of seconds before allowing another scale down activity (default: `300`)
-- `high_cpu_evaluation_periods` - Number of evaluation periods for high CPU alarm (default: `2`)
-- `high_cpu_period_seconds` - Number of seconds in an evaluation period for high CPU alarm (default: `300`)
-- `high_cpu_threshold_percent` - Threshold as a percentage for high CPU alarm (default: `90`)
-- `low_cpu_evaluation_periods` - Number of evaluation periods for low CPU alarm (default: `2`)
-- `low_cpu_period_seconds` - Number of seconds in an evaluation period for low CPU alarm (default: `300`)
-- `low_cpu_threshold_percent` - Threshold as a percentage for low CPU alarm (default: `10`)
-- `high_memory_evaluation_periods` - Number of evaluation periods for high memory alarm (default: `2`)
-- `high_memory_period_seconds` - Number of seconds in an evaluation period for high memory alarm (default: `300`)
-- `high_memory_threshold_percent` - Threshold as a percentage for high memory alarm (default: `90`)
-- `low_memory_evaluation_periods` - Number of evaluation periods for low memory alarm (default: `2`)
-- `low_memory_period_seconds` - Number of seconds in an evaluation period for low memory alarm (default: `300`)
-- `low_memory_threshold_percent` - Threshold as a percentage for low memory alarm (default: `10`)
+- `ecs_cluster_cpu_reservation_target` - CPUReservation metric target value for [target tracking autoscaling](https://segment.com/blog/when-aws-autoscale-doesn-t/) (default: `90.0`)
+- `ecs_cluster_memory_reservation_target` - MemoryReservation metric target value for [target tracking autoscaling](https://segment.com/blog/when-aws-autoscale-doesn-t/) (default: `90.0`)
 - `project` - Name of project this cluster is for (default: `Unknown`)
 - `environment` - Name of environment this cluster is targeting (default: `Unknown`)
 
