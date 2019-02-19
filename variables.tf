@@ -83,10 +83,6 @@ variable "subnet_ids" {
   type = "list"
 }
 
-variable "target_tracking_metric_type" {
-  default = "ASGAverageCPUUtilization"
-}
-
 variable "ecs_cluster_cpu_reservation_target" {
   default = "90.0"
 }
