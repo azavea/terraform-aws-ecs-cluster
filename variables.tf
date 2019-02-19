@@ -83,10 +83,14 @@ variable "subnet_ids" {
   type = "list"
 }
 
-variable "ecs_cluster_cpu_reservation_target" {
+variable "cpu_reservation_target_value" {
   default = "90.0"
 }
 
-variable "ecs_cluster_memory_reservation_target" {
+variable "memory_reservation_target_value" {
   default = "90.0"
+}
+
+variable "target_tracking_autoscaling_statistic" {
+  default = "Average"
 }

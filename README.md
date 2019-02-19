@@ -92,8 +92,9 @@ resource "aws_security_group_rule" "container_instance_https_egress" {
 - `max_size` - Maximum number of EC2 instances in cluster (default: `1`)
 - `enabled_metrics` - A list of metrics to gather for the cluster
 - `subnet_ids` - A list of subnet IDs to launch cluster instances
-- `ecs_cluster_cpu_reservation_target` - CPUReservation metric target value for [target tracking autoscaling](https://segment.com/blog/when-aws-autoscale-doesn-t/) (default: `90.0`)
-- `ecs_cluster_memory_reservation_target` - MemoryReservation metric target value for [target tracking autoscaling](https://segment.com/blog/when-aws-autoscale-doesn-t/) (default: `90.0`)
+- `cpu_reservation_target_value` - CPUReservation metric target value for [target tracking autoscaling](https://segment.com/blog/when-aws-autoscale-doesn-t/) (default: `90.0`)
+- `memory_reservation_target_value` - MemoryReservation metric target value for target tracking autoscaling (default: `90.0`)
+- `target_tracking_autoscaling_statistic` - Statistic for target tracking autoscaling metric specification (default: `Average`)
 - `project` - Name of project this cluster is for (default: `Unknown`)
 - `environment` - Name of environment this cluster is targeting (default: `Unknown`)
 

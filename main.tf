@@ -244,10 +244,10 @@ resource "aws_autoscaling_policy" "container_instance" {
 
       metric_name = "CPUReservation"
       namespace   = "AWS/ECS"
-      statistic   = "Maximum"
+      statistic   = "${var.target_tracking_autoscaling_statistic}"
     }
 
-    target_value = "${var.ecs_cluster_cpu_reservation_target}"
+    target_value = "${var.cpu_reservation_target_value}"
   }
 
   target_tracking_configuration {
@@ -259,9 +259,9 @@ resource "aws_autoscaling_policy" "container_instance" {
 
       metric_name = "MemoryReservation"
       namespace   = "AWS/ECS"
-      statistic   = "Maximum"
+      statistic   = "${var.target_tracking_autoscaling_statistic}"
     }
 
-    target_value = "${var.ecs_cluster_memory_reservation_target}"
+    target_value = "${var.memory_reservation_target_value}"
   }
 }
