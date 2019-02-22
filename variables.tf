@@ -91,6 +91,6 @@ variable "memory_reservation_target_value" {
   default = "90.0"
 }
 
-variable "target_tracking_autoscaling_statistic" {
+variable "target_value_metric_statistic" {
   default = "Average"
 }

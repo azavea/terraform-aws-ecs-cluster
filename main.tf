@@ -229,37 +229,44 @@ resource "aws_ecs_cluster" "container_instance" {
 #
 # CloudWatch resources
 #
-resource "aws_autoscaling_policy" "container_instance" {
-  name                   = "asgScalingPolicy${title(var.environment)}Cluster"
+resource "aws_autoscaling_policy" "container_instance_cpu_reservation" {
+  name                   = "asgScalingPolicyCPUReservation${title(var.environment)}Cluster"
   autoscaling_group_name = "${aws_autoscaling_group.container_instance.name}"
   adjustment_type        = "ChangeInCapacity"
   policy_type            = "TargetTrackingScaling"
 
   target_tracking_configuration {
     customized_metric_specification {
-      dimensions {
+      metric_dimension {
         name  = "ClusterName"
         value = "${aws_ecs_cluster.container_instance.name}"
       }
 
       metric_name = "CPUReservation"
       namespace   = "AWS/ECS"
-      statistic   = "${var.target_tracking_autoscaling_statistic}"
+      statistic   = "${var.target_value_metric_statistic}"
     }
 
     target_value = "${var.cpu_reservation_target_value}"
   }
+}
+
+resource "aws_autoscaling_policy" "container_instance_memory_reservation" {
+  name                   = "asgScalingPolicyMemoryReservation${title(var.environment)}Cluster"
+  autoscaling_group_name = "${aws_autoscaling_group.container_instance.name}"
+  adjustment_type        = "ChangeInCapacity"
+  policy_type            = "TargetTrackingScaling"
 
   target_tracking_configuration {
     customized_metric_specification {
-      dimensions {
+      metric_dimension {
         name  = "ClusterName"
         value = "${aws_ecs_cluster.container_instance.name}"
       }
 
       metric_name = "MemoryReservation"
       namespace   = "AWS/ECS"
-      statistic   = "${var.target_tracking_autoscaling_statistic}"
+      statistic   = "${var.target_value_metric_statistic}"
     }
 
     target_value = "${var.memory_reservation_target_value}"
