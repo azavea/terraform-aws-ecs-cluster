@@ -2,6 +2,11 @@
 
 A Terraform module to create an Amazon Web Services (AWS) EC2 Container Service (ECS) cluster.
 
+* [Usage](#usage)
+    * [Auto Scaling](#auto-scaling)
+* [Variables](#variables)
+* [Outputs](#outputs)
+
 ## Usage
 
 This module creates a security group that gets associated with the launch configuration for the ECS cluster Auto Scaling group. By default, the security group contains no rules. In order for network traffic to flow egress or ingress (including communication with ECS itself), you must associate all of the appropriate `aws_security_group_rule` resources with the `container_instance_security_group_id` module output.
@@ -18,7 +23,7 @@ data "template_file" "container_instance_cloud_config" {
 }
 
 module "container_service_cluster" {
-  source = "github.com/azavea/terraform-aws-ecs-cluster?ref=2.0.0"
+  source = "github.com/azavea/terraform-aws-ecs-cluster?ref=3.0.0"
 
   vpc_id        = "vpc-20f74844"
   ami_id        = "ami-b2df2ca4"
@@ -72,6 +77,58 @@ resource "aws_security_group_rule" "container_instance_https_egress" {
 }
 ```
 
+### Auto Scaling
+
+This module creates an Auto Scaling group for the ECS cluster. By default, there are no Auto Scaling policies associated with this group. In order for Auto Scaling to function, you must define `aws_autoscaling_policy` resources and associate them with the `container_instance_autoscaling_group_name` module output.
+
+See this [article](https://segment.com/blog/when-aws-autoscale-doesn-t/) for more information on Auto Scaling, and below for example policies. 
+
+```hcl
+resource "aws_autoscaling_policy" "container_instance_cpu_reservation" {
+  name                   = "asgScalingPolicyCPUReservationStagingCluster"
+  autoscaling_group_name = "${module.container_service_cluster.container_instance_autoscaling_group_name}"
+  adjustment_type        = "ChangeInCapacity"
+  policy_type            = "TargetTrackingScaling"
+
+  target_tracking_configuration {
+    customized_metric_specification {
+      metric_dimension {
+        name  = "ClusterName"
+        value = "${module.container_service_cluster.name}"
+      }
+
+      metric_name = "CPUReservation"
+      namespace   = "AWS/ECS"
+      statistic   = "Average"
+    }
+
+    target_value = "50.0"
+  }
+}
+
+resource "aws_autoscaling_policy" "container_instance_memory_reservation" {
+  name                   = "asgScalingPolicyMemoryReservationStagingCluster"
+  autoscaling_group_name = "${module.container_service_cluster.container_instance_autoscaling_group_name}"
+  adjustment_type        = "ChangeInCapacity"
+  policy_type            = "TargetTrackingScaling"
+
+  target_tracking_configuration {
+    customized_metric_specification {
+      metric_dimension {
+        name  = "ClusterName"
+        value = "${module.container_service_cluster.name}"
+      }
+
+      metric_name = "MemoryReservation"
+      namespace   = "AWS/ECS"
+      statistic   = "Average"
+    }
+
+    target_value = "90.0"
+  }
+}
+```
+
 ## Variables
 
 - `vpc_id` - ID of VPC meant to house cluster
@@ -92,20 +149,6 @@ resource "aws_security_group_rule" "container_instance_https_egress" {
 - `max_size` - Maximum number of EC2 instances in cluster (default: `1`)
 - `enabled_metrics` - A list of metrics to gather for the cluster
 - `subnet_ids` - A list of subnet IDs to launch cluster instances
-- `scale_up_cooldown_seconds` - Number of seconds before allowing another scale up activity (default: `300`)
-- `scale_down_cooldown_seconds` - Number of seconds before allowing another scale down activity (default: `300`)
-- `high_cpu_evaluation_periods` - Number of evaluation periods for high CPU alarm (default: `2`)
-- `high_cpu_period_seconds` - Number of seconds in an evaluation period for high CPU alarm (default: `300`)
-- `high_cpu_threshold_percent` - Threshold as a percentage for high CPU alarm (default: `90`)
-- `low_cpu_evaluation_periods` - Number of evaluation periods for low CPU alarm (default: `2`)
-- `low_cpu_period_seconds` - Number of seconds in an evaluation period for low CPU alarm (default: `300`)
-- `low_cpu_threshold_percent` - Threshold as a percentage for low CPU alarm (default: `10`)
-- `high_memory_evaluation_periods` - Number of evaluation periods for high memory alarm (default: `2`)
-- `high_memory_period_seconds` - Number of seconds in an evaluation period for high memory alarm (default: `300`)
-- `high_memory_threshold_percent` - Threshold as a percentage for high memory alarm (default: `90`)
-- `low_memory_evaluation_periods` - Number of evaluation periods for low memory alarm (default: `2`)
-- `low_memory_period_seconds` - Number of seconds in an evaluation period for low memory alarm (default: `300`)
-- `low_memory_threshold_percent` - Threshold as a percentage for low memory alarm (default: `10`)
 - `project` - Name of project this cluster is for (default: `Unknown`)
 - `environment` - Name of environment this cluster is targeting (default: `Unknown`)
 
@@ -118,4 +161,4 @@ resource "aws_security_group_rule" "container_instance_https_egress" {
 - `ecs_service_role_name` - Name of IAM role for use with ECS services
 - `ecs_service_role_arn` - ARN of IAM role for use with ECS services
 - `container_instance_ecs_for_ec2_service_role_arn` - ARN of IAM role associated with EC2 container instances
-- `container_instance_autoscaling_group_name` - Name of container instance Autoscaling Group
+- `container_instance_autoscaling_group_name` - Name of container instance Auto Scaling Group
