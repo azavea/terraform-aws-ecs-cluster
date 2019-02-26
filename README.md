@@ -2,6 +2,8 @@
 
 A Terraform module to create an Amazon Web Services (AWS) EC2 Container Service (ECS) cluster.
 
+## Table of Contents
+
 * [Usage](#usage)
     * [Auto Scaling](#auto-scaling)
 * [Variables](#variables)
@@ -9,7 +11,7 @@ A Terraform module to create an Amazon Web Services (AWS) EC2 Container Service 
 
 ## Usage
 
-This module creates a security group that gets associated with the launch configuration for the ECS cluster Auto Scaling group. By default, the security group contains no rules. In order for network traffic to flow egress or ingress (including communication with ECS itself), you must associate all of the appropriate `aws_security_group_rule` resources with the `container_instance_security_group_id` module output.
+This module creates a security group that gets associated with the launch template for the ECS cluster Auto Scaling group. By default, the security group contains no rules. In order for network traffic to flow egress or ingress (including communication with ECS itself), you must associate all of the appropriate `aws_security_group_rule` resources with the `container_instance_security_group_id` module output.
 
 See below for an example.
 
@@ -81,11 +83,11 @@ resource "aws_security_group_rule" "container_instance_https_egress" {
 
 This module creates an Auto Scaling group for the ECS cluster. By default, there are no Auto Scaling policies associated with this group. In order for Auto Scaling to function, you must define `aws_autoscaling_policy` resources and associate them with the `container_instance_autoscaling_group_name` module output.
 
-See this [article](https://segment.com/blog/when-aws-autoscale-doesn-t/) for more information on Auto Scaling, and below for example policies. 
+See this [article](https://segment.com/blog/when-aws-autoscale-doesn-t/) for more information on Auto Scaling, and below for example policies.
 
 ```hcl
 resource "aws_autoscaling_policy" "container_instance_cpu_reservation" {
-  name                   = "asgScalingPolicyCPUReservationStagingCluster"
+  name                   = "asgScalingPolicyCPUReservation"
   autoscaling_group_name = "${module.container_service_cluster.container_instance_autoscaling_group_name}"
   adjustment_type        = "ChangeInCapacity"
   policy_type            = "TargetTrackingScaling"
@@ -107,7 +109,7 @@ resource "aws_autoscaling_policy" "container_instance_cpu_reservation" {
 }
 
 resource "aws_autoscaling_policy" "container_instance_memory_reservation" {
-  name                   = "asgScalingPolicyMemoryReservationStagingCluster"
+  name                   = "asgScalingPolicyMemoryReservation"
   autoscaling_group_name = "${module.container_service_cluster.container_instance_autoscaling_group_name}"
   adjustment_type        = "ChangeInCapacity"
   policy_type            = "TargetTrackingScaling"
