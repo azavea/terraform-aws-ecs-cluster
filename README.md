@@ -131,20 +131,9 @@ resource "aws_autoscaling_policy" "container_instance_memory_reservation" {
 }
 ```
 
-It's worth nothing that the [`aws_autoscaling_policy`](https://www.terraform.io/docs/providers/aws/r/autoscaling_policy.html) documentation suggests we remove `desired_capacity` from the `aws_autoscaling_group` resource when using Auto Scaling. That makes sense, because when it is present, any Terraform plan/apply cycle will reset it.
+It's worth noting that the [`aws_autoscaling_policy`](https://www.terraform.io/docs/providers/aws/r/autoscaling_policy.html) documentation suggests we remove `desired_capacity` from the `aws_autoscaling_group` resource when using Auto Scaling. That makes sense, because when it is present, any Terraform plan/apply cycle will reset it.
 
 Unfortunately, removing it from the `aws_autoscaling_group` resource means removing it from the module too.
-
-A potential workaround right now is to play games to feed back the current `desired_capacity` via `-var` when executing `plan`. 
-
-See below for an example.
-
-```bash
-CONTAINER_SERVICE_DESIRED_CAPACITY=$(aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names asgStagingContainerInstance | jq ".AutoScalingGroups[].DesiredCapacity")
-
-terraform plan \
-          -var="container_instance_asg_desired_capacity=${CONTAINER_SERVICE_DESIRED_CAPACITY:-0}"
-```
 
 We will reevaluate things when [Terraform 0.12](https://www.hashicorp.com/blog/terraform-0-12-conditional-operator-improvements) comes out because it promises handling of a `null` `desired_capacity`.
 
