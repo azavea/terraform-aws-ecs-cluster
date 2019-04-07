@@ -1,0 +1,41 @@
+repository:
+  name: terraform-aws-ecs-cluster
+  description: A Terraform module to create an Amazon Web Services (AWS) EC2 Container Service (ECS) cluster.
+  topics: terraform, terraform-modules, aws, amazon-web-services, ecs
+  private: false
+  has_issues: true
+  has_projects: false
+  has_wiki: false
+  has_downloads: false
+  default_branch: develop
+  allow_squash_merge: true
+  allow_merge_commit: true
+  allow_rebase_merge: true
+
+labels:
+  - name: operations
+    color: 000000
+  - name: queue
+    color: ff0000
+  - name: in progress
+  - name: in review
+  - name: "size: 1"
+  - name: "size: 2"
+  - name: "size: 3"
+  - name: "size: 5"
+
+teams:
+  - name: Operations
+    permission: admin
+  - name: Employees
+    permission: pull
+
+branches:
+  - name: develop
+    protection:
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+        dismiss_stale_reviews: true
+      required_status_checks:
+        strict: true
+  - name: master
