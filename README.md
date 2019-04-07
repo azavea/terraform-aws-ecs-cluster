@@ -1,5 +1,7 @@
 # terraform-aws-ecs-cluster
 
+[![CircleCI](https://circleci.com/gh/azavea/terraform-aws-ecs-cluster.svg?style=svg)](https://circleci.com/gh/azavea/terraform-aws-ecs-cluster)
+
 A Terraform module to create an Amazon Web Services (AWS) EC2 Container Service (ECS) cluster.
 
 ## Table of Contents
