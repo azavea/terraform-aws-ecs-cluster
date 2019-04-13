@@ -224,7 +224,7 @@ resource "aws_autoscaling_group" "container_instance" {
 # ECS resources
 #
 resource "aws_ecs_cluster" "container_instance" {
-  name = "ecs${title(var.environment)}Cluster"
+  name = "${coalesce(var.cluster_name, local.cluster_name)}"
 }
 
 #

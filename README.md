@@ -74,6 +74,7 @@ resource "aws_security_group_rule" "container_instance_https_egress" {
 
 ## Variables
 
+- `cluster_name` - Name of the ECS Cluster, it is optional
 - `vpc_id` - ID of VPC meant to house cluster
 - `lookup_latest_ami` - lookup the latest Amazon-owned ECS AMI. If this variable is `true`, the latest ECS AMI will be used, even if `ami_id` is provided (default: `false`).
 - `ami_id` - Cluster instance Amazon Machine Image (AMI) ID. If `lookup_latest_ami` is `true`, this variable will be silently ignored.

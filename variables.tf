@@ -6,6 +6,10 @@ variable "environment" {
   default = "Unknown"
 }
 
+variable "cluster_name" {
+  default = ""
+}
+
 variable "vpc_id" {}
 
 variable "ami_id" {
