@@ -10,6 +10,10 @@ variable "cluster_name" {
   default = ""
 }
 
+variable "asg_name" {
+  default = ""
+}
+
 variable "vpc_id" {}
 
 variable "ami_id" {

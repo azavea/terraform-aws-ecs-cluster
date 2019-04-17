@@ -185,7 +185,7 @@ resource "aws_autoscaling_group" "container_instance" {
     create_before_destroy = true
   }
 
-  name = "asg${title(var.environment)}ContainerInstance"
+  name = "${coalesce(var.asg_name, local.asg_name)}"
 
   launch_template = {
     id      = "${aws_launch_template.container_instance.id}"
