@@ -14,6 +14,10 @@ variable "asg_name" {
   default = ""
 }
 
+variable "sg_name" {
+  default = ""
+}
+
 variable "vpc_id" {}
 
 variable "ami_id" {

@@ -76,7 +76,7 @@ resource "aws_security_group" "container_instance" {
   vpc_id = "${var.vpc_id}"
 
   tags {
-    Name        = "sgContainerInstance"
+    Name        = "${coalesce(var.sg_name, local.sg_name)}"
     Project     = "${var.project}"
     Environment = "${var.environment}"
   }
