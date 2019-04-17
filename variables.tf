@@ -18,6 +18,10 @@ variable "sg_name" {
   default = ""
 }
 
+variable "iam_role_name" {
+  default = ""
+}
+
 variable "vpc_id" {}
 
 variable "ami_id" {
