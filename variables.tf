@@ -18,7 +18,7 @@ variable "security_group_name" {
   default = ""
 }
 
-variable "iam_role_name" {
+variable "ecs_for_ec2_service_role_name" {
   default = ""
 }
 

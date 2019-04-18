@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "container_instance_ec2_assume_role" {
 }
 
 resource "aws_iam_role" "container_instance_ec2" {
-  name               = "${coalesce(var.iam_role_name, local.iam_role_name)}"
+  name               = "${coalesce(var.ecs_for_ec2_service_role_name, local.ecs_for_ec2_service_role_name)}"
   assume_role_policy = "${data.aws_iam_policy_document.container_instance_ec2_assume_role.json}"
 }
 
