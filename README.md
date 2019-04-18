@@ -75,8 +75,8 @@ resource "aws_security_group_rule" "container_instance_https_egress" {
 ## Variables
 
 - `cluster_name` - Name of the ECS Cluster, it is optional
-- `autoscaling_group_name` - Name of the ASG name for ECS Cluster, it is optional
-- `security_group_name` - Name of the Security Group name for ECS Cluster, it is optional
+- `autoscaling_group_name` - Name of the autoscaling group for ECS Cluster, it is optional
+- `security_group_name` - Name of the security group for ECS Cluster, it is optional
 - `ecs_for_ec2_service_role_name` - Name of iam role for ECS Cluster, it is optional
 - `vpc_id` - ID of VPC meant to house cluster
 - `lookup_latest_ami` - lookup the latest Amazon-owned ECS AMI. If this variable is `true`, the latest ECS AMI will be used, even if `ami_id` is provided (default: `false`).
