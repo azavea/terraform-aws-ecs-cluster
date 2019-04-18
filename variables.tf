@@ -14,7 +14,7 @@ variable "autoscaling_group_name" {
   default = ""
 }
 
-variable "sg_name" {
+variable "security_group_name" {
   default = ""
 }
 
