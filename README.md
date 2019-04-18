@@ -75,7 +75,7 @@ resource "aws_security_group_rule" "container_instance_https_egress" {
 ## Variables
 
 - `cluster_name` - Name of the ECS Cluster, it is optional
-- `asg_name` - Name of the ASG name for ECS Cluster, it is optional
+- `autoscaling_group_name` - Name of the ASG name for ECS Cluster, it is optional
 - `sg_name` - Name of the Security Group name for ECS Cluster, it is optional
 - `iam_role_name` - Name of iam role for ECS Cluster, it is optional
 - `vpc_id` - ID of VPC meant to house cluster

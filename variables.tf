@@ -10,7 +10,7 @@ variable "cluster_name" {
   default = ""
 }
 
-variable "asg_name" {
+variable "autoscaling_group_name" {
   default = ""
 }
 

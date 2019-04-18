@@ -1,6 +1,6 @@
 locals {
-  cluster_name  = "ecs${title(var.environment)}Cluster"
-  asg_name      = "asg${title(var.environment)}ContainerInstance"
-  sg_name       = "sgContainerInstance"
-  iam_role_name = "${var.environment}ContainerInstanceProfile"
+  cluster_name           = "ecs${title(var.environment)}Cluster"
+  autoscaling_group_name = "asg${title(var.environment)}ContainerInstance"
+  sg_name                = "sgContainerInstance"
+  iam_role_name          = "${var.environment}ContainerInstanceProfile"
 }
