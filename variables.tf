@@ -6,6 +6,22 @@ variable "environment" {
   default = "Unknown"
 }
 
+variable "cluster_name" {
+  default = ""
+}
+
+variable "autoscaling_group_name" {
+  default = ""
+}
+
+variable "security_group_name" {
+  default = ""
+}
+
+variable "ecs_for_ec2_service_role_name" {
+  default = ""
+}
+
 variable "vpc_id" {}
 
 variable "ami_id" {
