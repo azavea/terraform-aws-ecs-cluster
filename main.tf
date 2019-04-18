@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "container_instance_ec2_assume_role" {
 }
 
 resource "aws_iam_role" "container_instance_ec2" {
-  name               = "${var.environment}ContainerInstanceProfile"
+  name               = "${coalesce(var.ecs_for_ec2_service_role_name, local.ecs_for_ec2_service_role_name)}"
   assume_role_policy = "${data.aws_iam_policy_document.container_instance_ec2_assume_role.json}"
 }
 
@@ -76,7 +76,7 @@ resource "aws_security_group" "container_instance" {
   vpc_id = "${var.vpc_id}"
 
   tags {
-    Name        = "sgContainerInstance"
+    Name        = "${coalesce(var.security_group_name, local.security_group_name)}"
     Project     = "${var.project}"
     Environment = "${var.environment}"
   }
@@ -185,7 +185,7 @@ resource "aws_autoscaling_group" "container_instance" {
     create_before_destroy = true
   }
 
-  name = "asg${title(var.environment)}ContainerInstance"
+  name = "${coalesce(var.autoscaling_group_name, local.autoscaling_group_name)}"
 
   launch_template = {
     id      = "${aws_launch_template.container_instance.id}"
@@ -224,5 +224,5 @@ resource "aws_autoscaling_group" "container_instance" {
 # ECS resources
 #
 resource "aws_ecs_cluster" "container_instance" {
-  name = "ecs${title(var.environment)}Cluster"
+  name = "${coalesce(var.cluster_name, local.cluster_name)}"
 }
