@@ -3,6 +3,8 @@
 - Remove auto scaling support from within module.
 - Rename `private_subnet_ids` to `subnet_ids`.
 - Add ability to set cluster, auto scaling group, security group, and IAM service role names.
+- Add CI support via CircleCI.
+- Add repository metadata support via Probot Settings.
 
 ## 2.0.0
 
