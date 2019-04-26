@@ -5,6 +5,7 @@
 - Add ability to set cluster, auto scaling group, security group, and IAM service role names.
 - Add CI support via CircleCI.
 - Add repository metadata support via Probot Settings.
+- Use top level `owners` attributes for `aws_ami` (requires AWS provider 2.0.0+).
 
 ## 2.0.0
 
