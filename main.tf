@@ -111,15 +111,11 @@ data "template_cloudinit_config" "container_instance_cloud_config" {
 data "aws_ami" "ecs_ami" {
   count       = "${var.lookup_latest_ami ? 1 : 0}"
   most_recent = true
+  owners      = ["${var.ami_owners}"]
 
   filter {
     name   = "name"
     values = ["amzn-ami-*-amazon-ecs-optimized"]
-  }
-
-  filter {
-    name   = "owner-alias"
-    values = ["${var.ami_owners}"]
   }
 
   filter {
