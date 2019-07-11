@@ -98,3 +98,8 @@ variable "enabled_metrics" {
 variable "subnet_ids" {
   type = "list"
 }
+
+variable "autoscaling_group_lifecycle_ignore_changes" {
+  type = "list"
+  default = []
+}
