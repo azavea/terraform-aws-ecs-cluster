@@ -98,3 +98,7 @@ variable "enabled_metrics" {
 variable "subnet_ids" {
   type = "list"
 }
+
+variable "ecs_service_role_name" {
+  default = ""
+}
