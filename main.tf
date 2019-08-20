@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "ecs_assume_role" {
 }
 
 resource "aws_iam_role" "ecs_service_role" {
-  name               = "ecs${title(var.environment)}ServiceRole"
+  name               = "${coalesce(var.ecs_service_role_name, local.ecs_service_role_name)}"
   assume_role_policy = "${data.aws_iam_policy_document.ecs_assume_role.json}"
 }
 

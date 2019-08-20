@@ -22,6 +22,10 @@ variable "ecs_for_ec2_service_role_name" {
   default = ""
 }
 
+variable "ecs_service_role_name" {
+  default = ""
+}
+
 variable "vpc_id" {}
 
 variable "ami_id" {
