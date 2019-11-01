@@ -179,6 +179,7 @@ resource "aws_launch_template" "container_instance" {
 resource "aws_autoscaling_group" "container_instance" {
   lifecycle {
     create_before_destroy = true
+    ignore_changes        = "${var.ignore_changes}"
   }
 
   name = "${coalesce(var.autoscaling_group_name, local.autoscaling_group_name)}"

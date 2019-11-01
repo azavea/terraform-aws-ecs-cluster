@@ -102,3 +102,8 @@ variable "enabled_metrics" {
 variable "subnet_ids" {
   type = "list"
 }
+
+variable "ignore_changes" {
+  type = "list"
+  default = []
+}
