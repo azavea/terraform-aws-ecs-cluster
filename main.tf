@@ -89,7 +89,7 @@ data "template_file" "container_instance_base_cloud_config" {
   template = "${file("${path.module}/cloud-config/base-container-instance.yml.tpl")}"
 
   vars {
-    ecs_cluster_name = "${aws_ecs_cluster.container_instance.name}"
+    ecs_cluster_name = "${var.cluster_name}"
   }
 }
 
@@ -214,11 +214,4 @@ resource "aws_autoscaling_group" "container_instance" {
     value               = "${var.environment}"
     propagate_at_launch = true
   }
-}
-
-#
-# ECS resources
-#
-resource "aws_ecs_cluster" "container_instance" {
-  name = "${coalesce(var.cluster_name, local.cluster_name)}"
 }
