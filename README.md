@@ -164,7 +164,6 @@ We will reevaluate things when [Terraform 0.12](https://www.hashicorp.com/blog/t
 - `max_size` - Maximum number of EC2 instances in cluster (default: `1`)
 - `enabled_metrics` - A list of metrics to gather for the cluster
 - `subnet_ids` - A list of subnet IDs to launch cluster instances
-- `ignore_changes` - A list of fields that want be be ignore changes for autoscaling group. for example, "desired_capacity" (default: `[]`)  
 - `project` - Name of project this cluster is for (default: `Unknown`)
 - `environment` - Name of environment this cluster is targeting (default: `Unknown`)
 
