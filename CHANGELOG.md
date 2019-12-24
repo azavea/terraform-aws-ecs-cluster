@@ -6,6 +6,7 @@
 - Add CI support via CircleCI.
 - Add repository metadata support via Probot Settings.
 - Use top level `owners` attributes for `aws_ami` (requires AWS provider 2.0.0+).
+- Allow specified `ignore_changes` for autoacaling group.
 
 ## 2.0.0
 
