@@ -48,6 +48,26 @@ variable "root_block_device_size" {
   default = "8"
 }
 
+variable "enable_data_block_device" {
+  default = 0
+}
+
+variable "data_block_device_name" {
+  default = "/dev/xvdb"
+}
+
+variable "data_block_device_type" {
+  default = "gp2"
+}
+
+variable "data_block_device_size" {
+  default = "50"
+}
+
+variable "data_block_device_delete_on_termination" {
+  default = 1
+}
+
 variable "instance_type" {
   default = "t2.micro"
 }
