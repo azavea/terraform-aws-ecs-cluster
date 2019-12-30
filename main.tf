@@ -140,16 +140,7 @@ data "aws_ami" "user_ami" {
 }
 
 resource "aws_launch_template" "container_instance" {
-  block_device_mappings = [
-    {
-      device_name = "${var.lookup_latest_ami ? join("", data.aws_ami.ecs_ami.*.root_device_name) : join("", data.aws_ami.user_ami.*.root_device_name)}"
-
-      ebs = [{
-        volume_type = "${var.root_block_device_type}"
-        volume_size = "${var.root_block_device_size}"
-      }]
-    }
-  ]
+  block_device_mappings = ["${local.voloume_devices}"]
 
   credit_specification {
     cpu_credits = "${var.cpu_credit_specification}"
