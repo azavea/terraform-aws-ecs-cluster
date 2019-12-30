@@ -20,6 +20,7 @@ locals {
     ebs = [{
       volume_type = "${var.data_block_device_type}"
       volume_size = "${var.data_block_device_size}"
+      delete_on_termination = "${var.data_block_device_delete_on_termination}"
     }]
   }
 

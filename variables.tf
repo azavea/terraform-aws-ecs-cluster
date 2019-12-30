@@ -64,6 +64,10 @@ variable "data_block_device_size" {
   default = "50"
 }
 
+variable "data_block_device_delete_on_termination" {
+  default = 1
+}
+
 variable "instance_type" {
   default = "t2.micro"
 }
