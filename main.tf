@@ -140,7 +140,7 @@ data "aws_ami" "user_ami" {
 }
 
 resource "aws_launch_template" "container_instance" {
-  block_device_mappings = ["${local.voloume_devices}"]
+  block_device_mappings = ["${local.volume_devices}"]
 
   credit_specification {
     cpu_credits = "${var.cpu_credit_specification}"
