@@ -23,16 +23,16 @@ locals {
     }]
   }
 
-  voloume_devices_without_data = [
+  volume_devices_without_data = [
     "${local.root_device}",
   ]
 
-  voloume_devices_with_data = [
+  volume_devices_with_data = [
     "${local.root_device}",
     "${local.data_device}",
   ]
 
   //  https://github.com/hashicorp/terraform/issues/12453#issuecomment-311611817
   volume_end_index = "${var.enable_data_block_device ? 2 : 1}"
-  voloume_devices = "${slice(local.voloume_devices_with_data, 0, local.volume_end_index)}"
+  volume_devices = "${slice(local.volume_devices_with_data, 0, local.volume_end_index)}"
 }
