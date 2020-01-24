@@ -15,6 +15,8 @@ data "aws_iam_policy_document" "container_instance_ec2_assume_role" {
 }
 
 resource "aws_iam_role" "container_instance_ec2" {
+  count = var.deploy_autoscaling_group ? 1 : 0
+
   name = coalesce(
     var.ecs_for_ec2_service_role_name,
     local.ecs_for_ec2_service_role_name,
@@ -23,13 +25,16 @@ resource "aws_iam_role" "container_instance_ec2" {
 }
 
 resource "aws_iam_role_policy_attachment" "ec2_service_role" {
-  role       = aws_iam_role.container_instance_ec2.name
+  count      = var.deploy_autoscaling_group ? 1 : 0
+  role       = join("", aws_iam_role.container_instance_ec2[*].name)
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
 resource "aws_iam_instance_profile" "container_instance" {
-  name = aws_iam_role.container_instance_ec2.name
-  role = aws_iam_role.container_instance_ec2.name
+  count = var.deploy_autoscaling_group ? 1 : 0
+
+  name = join(aws_iam_role.container_instance_ec2[*].name)
+  role = join(aws_iam_role.container_instance_ec2[*].name)
 }
 
 #
@@ -37,6 +42,7 @@ resource "aws_iam_instance_profile" "container_instance" {
 #
 
 data "aws_iam_policy_document" "ecs_assume_role" {
+
   statement {
     effect = "Allow"
 
@@ -50,12 +56,16 @@ data "aws_iam_policy_document" "ecs_assume_role" {
 }
 
 resource "aws_iam_role" "ecs_service_role" {
+
+  count = var.deploy_autoscaling_group ? 1 : 0
+
   name               = coalesce(var.ecs_service_role_name, local.ecs_service_role_name)
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_role.json
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_service_role" {
-  role       = aws_iam_role.ecs_service_role.name
+  count      = var.deploy_autoscaling_group ? 1 : 0
+  role       = join("", aws_iam_role.ecs_service_role[*].name)
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
 }
 
@@ -76,6 +86,7 @@ data "aws_iam_policy_document" "ecs_autoscale_assume_role" {
 # Security group resources
 #
 resource "aws_security_group" "container_instance" {
+  count  = var.deploy_autoscaling_group ? 1 : 0
   vpc_id = var.vpc_id
 
   tags = {
@@ -108,13 +119,13 @@ data "template_cloudinit_config" "container_instance_cloud_config" {
   }
 
   part {
-    content_type = var.cloud_config_content_type
-    content      = var.cloud_config_content
+    content_type = var.deploy_autoscaling_group ? var.cloud_config_content_type : ""
+    content      = var.deploy_autoscaling_group ? var.cloud_config_content : ""
   }
 }
 
 data "aws_ami" "ecs_ami" {
-  count       = var.lookup_latest_ami ? 1 : 0
+  count       = (var.deploy_autoscaling_group && var.lookup_latest_ami) ? 1 : 0
   most_recent = true
   owners      = var.ami_owners
 
@@ -135,7 +146,7 @@ data "aws_ami" "ecs_ami" {
 }
 
 data "aws_ami" "user_ami" {
-  count  = var.lookup_latest_ami ? 0 : 1
+  count  = (var.deploy_autoscaling_group && var.lookup_latest_ami) ? 0 : 1
   owners = var.ami_owners
 
   filter {
@@ -145,6 +156,9 @@ data "aws_ami" "user_ami" {
 }
 
 resource "aws_launch_template" "container_instance" {
+
+  count = var.deploy_autoscaling_group ? 1 : 0
+
   block_device_mappings {
     device_name = var.lookup_latest_ami ? join("", data.aws_ami.ecs_ami.*.root_device_name) : join("", data.aws_ami.user_ami.*.root_device_name)
 
@@ -184,6 +198,9 @@ resource "aws_launch_template" "container_instance" {
 }
 
 resource "aws_autoscaling_group" "container_instance" {
+
+  count = var.deploy_autoscaling_group ? 1 : 0
+
   lifecycle {
     create_before_destroy = true
   }
@@ -191,8 +208,8 @@ resource "aws_autoscaling_group" "container_instance" {
   name = coalesce(var.autoscaling_group_name, local.autoscaling_group_name)
 
   launch_template {
-    id      = aws_launch_template.container_instance.id
-    version = "$Latest"
+    id      = join("", aws_launch_template.container_instance[*].id)
+    version = join("", aws_launch_template.container_instance[*].latest_version)
   }
 
   health_check_grace_period = var.health_check_grace_period

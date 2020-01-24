@@ -6,6 +6,10 @@ variable "environment" {
   default = "Unknown"
 }
 
+variable "deploy_autoscaling_group" {
+  default = true
+}
+
 variable "cluster_name" {
   default = ""
 }
@@ -25,6 +29,7 @@ variable "ecs_for_ec2_service_role_name" {
 variable "ecs_service_role_name" {
   default = ""
 }
+
 
 variable "vpc_id" {
 }
