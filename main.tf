@@ -103,7 +103,7 @@ data "template_cloudinit_config" "container_instance_cloud_config" {
   }
 
   part {
-    content_type = var.deploy_autoscaling_group ? var.cloud_config_content_type : ""
+    content_type = var.deploy_autoscaling_group ? var.cloud_config_content_type : "text/cloud-config"
     content      = var.deploy_autoscaling_group ? var.cloud_config_content : ""
   }
 }
