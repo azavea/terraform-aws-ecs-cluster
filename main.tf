@@ -33,8 +33,8 @@ resource "aws_iam_role_policy_attachment" "ec2_service_role" {
 resource "aws_iam_instance_profile" "container_instance" {
   count = var.deploy_autoscaling_group ? 1 : 0
 
-  name = join(aws_iam_role.container_instance_ec2[*].name)
-  role = join(aws_iam_role.container_instance_ec2[*].name)
+  name = join("", aws_iam_role.container_instance_ec2[*].name)
+  role = join("", aws_iam_role.container_instance_ec2[*].name)
 }
 
 #
@@ -161,7 +161,7 @@ resource "aws_launch_template" "container_instance" {
   name_prefix = "lt${title(var.environment)}ContainerInstance-"
 
   iam_instance_profile {
-    name = aws_iam_instance_profile.container_instance.name
+    name = join("", aws_iam_instance_profile.container_instance[*].name)
   }
 
   # Using join() is a workaround for depending on conditional resources.
@@ -171,7 +171,7 @@ resource "aws_launch_template" "container_instance" {
   instance_initiated_shutdown_behavior = "terminate"
   instance_type                        = var.instance_type
   key_name                             = var.key_name
-  vpc_security_group_ids               = [aws_security_group.container_instance.id]
+  vpc_security_group_ids               = aws_security_group.container_instance[*].id
   user_data = base64encode(
     data.template_cloudinit_config.container_instance_cloud_config.rendered,
   )
