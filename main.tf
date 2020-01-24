@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "ecs_assume_role" {
 
     principals {
       type        = "Service"
-      identifiers = ["ecs.amazonaws.com"]
+      identifiers = ["ecs.amazonaws.com", "application-autoscaling.amazonaws.com"]
     }
 
     actions = ["sts:AssumeRole"]
@@ -57,29 +57,13 @@ data "aws_iam_policy_document" "ecs_assume_role" {
 
 resource "aws_iam_role" "ecs_service_role" {
 
-  count = var.deploy_autoscaling_group ? 1 : 0
-
   name               = coalesce(var.ecs_service_role_name, local.ecs_service_role_name)
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_role.json
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_service_role" {
-  count      = var.deploy_autoscaling_group ? 1 : 0
-  role       = join("", aws_iam_role.ecs_service_role[*].name)
+  role       = aws_iam_role.ecs_service_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
-}
-
-data "aws_iam_policy_document" "ecs_autoscale_assume_role" {
-  statement {
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["application-autoscaling.amazonaws.com"]
-    }
-
-    actions = ["sts:AssumeRole"]
-  }
 }
 
 #

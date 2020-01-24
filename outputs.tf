@@ -23,7 +23,7 @@ output "container_instance_autoscaling_group_name" {
 }
 
 output "ecs_service_role_arn" {
-  value = join("", aws_iam_role.ecs_service_role[*].arn)
+  value = aws_iam_role.ecs_service_role.arn
 }
 
 output "container_instance_ecs_for_ec2_service_role_arn" {
