@@ -33,15 +33,14 @@ module "container_service_cluster" {
   ami_id        = "ami-b2df2ca4"
   instance_type = "t2.micro"
   key_name      = "hector"
-  cloud_config_content  = "${data.template_file.container_instance_cloud_config.rendered}"
+  cloud_config_content  = data.template_file.container_instance_cloud_config.rendered
 
   root_block_device_type = "gp2"
-  root_block_device_size = "10"
+  root_block_device_size = 10
 
-  health_check_grace_period = "600"
-  desired_capacity          = "1"
-  min_size                  = "0"
-  max_size                  = "1"
+  health_check_grace_period = 600
+  min_size                  = 0
+  max_size                  = 1
 
   enabled_metrics = [
     "GroupMinSize",
@@ -67,7 +66,7 @@ resource "aws_security_group_rule" "container_instance_http_egress" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 
-  security_group_id = "${module.container_service_cluster.container_instance_security_group_id}"
+  security_group_id = module.container_service_cluster.container_instance_security_group_id
 }
 
 resource "aws_security_group_rule" "container_instance_https_egress" {
@@ -77,7 +76,7 @@ resource "aws_security_group_rule" "container_instance_https_egress" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 
-  security_group_id = "${module.container_service_cluster.container_instance_security_group_id}"
+  security_group_id = module.container_service_cluster.container_instance_security_group_id
 }
 ```
 
@@ -133,33 +132,26 @@ resource "aws_autoscaling_policy" "container_instance_memory_reservation" {
 }
 ```
 
-It's worth noting that the [`aws_autoscaling_policy`](https://www.terraform.io/docs/providers/aws/r/autoscaling_policy.html) documentation suggests we remove `desired_capacity` from the `aws_autoscaling_group` resource when using Auto Scaling. That makes sense, because when it is present, any Terraform plan/apply cycle will reset it.
-
-Unfortunately, removing it from the `aws_autoscaling_group` resource means removing it from the module too.
-
-We will reevaluate things when [Terraform 0.12](https://www.hashicorp.com/blog/terraform-0-12-conditional-operator-improvements) comes out because it promises handling of a `null` `desired_capacity`.
-
 ## Variables
 
 - `cluster_name` - Name of the ECS Cluster, it is optional
 - `autoscaling_group_name` - Name of the autoscaling group for ECS Cluster, it is optional
 - `security_group_name` - Name of the security group for ECS Cluster, it is optional
-- `ecs_for_ec2_service_role_name` - Name of iam role for ECS Cluster, it is optional
-- `ecs_service_role_name` - Name of iam role for ECS Service, it is optional
+- `ecs_for_ec2_service_role_name` - Name of IAM role for ECS Cluster, it is optional
+- `ecs_service_role_name` - Name of IAM role for ECS Service, it is optional
 - `vpc_id` - ID of VPC meant to house cluster
-- `lookup_latest_ami` - lookup the latest Amazon-owned ECS AMI. If this variable is `true`, the latest ECS AMI will be used, even if `ami_id` is provided (default: `false`).
+- `lookup_latest_ami` - Lookup the latest Amazon-owned ECS AMI. If `true`, the latest ECS AMI will be used, even if `ami_id` is provided (default: `false`).
 - `ami_id` - Cluster instance Amazon Machine Image (AMI) ID. If `lookup_latest_ami` is `true`, this variable will be silently ignored.
-- `ami_owners` - List of accounts that own the AMI (default: `self, amazon, aws-marketplace`)
 - `root_block_device_type` - Instance root block device type (default: `gp2`)
 - `root_block_device_size` - Instance root block device size in gigabytes (default: `8`)
 - `instance_type` - Instance type for cluster instances (default: `t2.micro`)
 - `cpu_credit_specification` - Credit option for CPU usage. Can be ["standard"](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances-standard-mode.html) or ["unlimited"](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances-unlimited-mode.html). (default: `standard`).
-- `detailed_monitoring` - If this variable is `true`, then [detailed monitoring](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html) will be enabled on the instance. (default: `false`)
-- `key_name` - EC2 Key pair name
-- `cloud_config_content` - user data supplied to launch configuration for cluster nodes
-- `cloud_config_content_type` - the type of configuration being passed in as user data, see [EC2 user guide](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonLinuxAMIBasics.html#CloudInit) for a list of possible types (default: `text/cloud-config`)
+- `detailed_monitoring` - If `true`, then [detailed monitoring](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html) will be enabled on the instance. (default: `false`)
+- `key_name` - EC2 key pair name
+- `cloud_config_content` - User data supplied to launch configuration for cluster nodes
+- `cloud_config_content_type` - The type of configuration being passed in as user data, see [EC2 user guide](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonLinuxAMIBasics.html#CloudInit) for a list of possible types (default: `text/cloud-config`)
 - `health_check_grace_period` - Time in seconds after container instance comes into service before checking health (default: `600`)
-- `desired_capacity` - Number of EC2 instances that should be running in cluster (default: `1`)
+- `override_desired_capacity` - Override the number of EC2 instances that should be running in cluster (default: `null`)
 - `min_size` - Minimum number of EC2 instances in cluster (default: `0`)
 - `max_size` - Maximum number of EC2 instances in cluster (default: `1`)
 - `enabled_metrics` - A list of metrics to gather for the cluster
