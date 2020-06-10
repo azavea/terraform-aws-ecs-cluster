@@ -18,25 +18,20 @@ This module creates a security group that gets associated with the launch templa
 See below for an example.
 
 ```hcl
-data "template_file" "container_instance_cloud_config" {
-  template = "${file("cloud-config/container-instance.yml.tpl")}"
-
-  vars {
-    environment = "${var.environment}"
-  }
-}
-
 module "container_service_cluster" {
   source = "github.com/azavea/terraform-aws-ecs-cluster?ref=3.0.0"
 
-  vpc_id        = "vpc-20f74844"
-  ami_id        = "ami-b2df2ca4"
-  instance_type = "t2.micro"
-  key_name      = "hector"
-  cloud_config_content  = data.template_file.container_instance_cloud_config.rendered
+  vpc_id            = "vpc-7e3f2618"
+  ami_id            = "ami-0b22c910bce7178b6"
+  instance_type     = "t3.large"
+  key_name          = "joker"
+
+  cloud_config_content = templatefile("${path.module}/cloud-config/container-instance.yml.tmpl", {
+    environment = "Staging"
+  })
 
   root_block_device_type = "gp2"
-  root_block_device_size = 10
+  root_block_device_size = 30
 
   health_check_grace_period = 600
   min_size                  = 0
@@ -89,7 +84,7 @@ See this [article](https://segment.com/blog/when-aws-autoscale-doesn-t/) for mor
 ```hcl
 resource "aws_autoscaling_policy" "container_instance_cpu_reservation" {
   name                   = "asgScalingPolicyCPUReservation"
-  autoscaling_group_name = "${module.container_service_cluster.container_instance_autoscaling_group_name}"
+  autoscaling_group_name = module.container_service_cluster.container_instance_autoscaling_group_name
   adjustment_type        = "ChangeInCapacity"
   policy_type            = "TargetTrackingScaling"
 
@@ -97,7 +92,7 @@ resource "aws_autoscaling_policy" "container_instance_cpu_reservation" {
     customized_metric_specification {
       metric_dimension {
         name  = "ClusterName"
-        value = "${module.container_service_cluster.name}"
+        value = module.container_service_cluster.name
       }
 
       metric_name = "CPUReservation"
@@ -105,13 +100,13 @@ resource "aws_autoscaling_policy" "container_instance_cpu_reservation" {
       statistic   = "Average"
     }
 
-    target_value = "50.0"
+    target_value = 50.0
   }
 }
 
 resource "aws_autoscaling_policy" "container_instance_memory_reservation" {
   name                   = "asgScalingPolicyMemoryReservation"
-  autoscaling_group_name = "${module.container_service_cluster.container_instance_autoscaling_group_name}"
+  autoscaling_group_name = module.container_service_cluster.container_instance_autoscaling_group_name
   adjustment_type        = "ChangeInCapacity"
   policy_type            = "TargetTrackingScaling"
 
@@ -119,7 +114,7 @@ resource "aws_autoscaling_policy" "container_instance_memory_reservation" {
     customized_metric_specification {
       metric_dimension {
         name  = "ClusterName"
-        value = "${module.container_service_cluster.name}"
+        value = module.container_service_cluster.name
       }
 
       metric_name = "MemoryReservation"
@@ -127,7 +122,7 @@ resource "aws_autoscaling_policy" "container_instance_memory_reservation" {
       statistic   = "Average"
     }
 
-    target_value = "90.0"
+    target_value = 90.0
   }
 }
 ```
