@@ -132,6 +132,7 @@ data "aws_ami" "ecs_ami" {
 data "aws_ami" "user_ami" {
   count  = "${var.lookup_latest_ami ? 0 : 1}"
   owners = ["${var.ami_owners}"]
+  include_deprecated = ["${var.include_deprecated}"]
 
   filter {
     name   = "image-id"

@@ -32,6 +32,10 @@ variable "ami_id" {
   default = "ami-6944c513"
 }
 
+variable "include_deprecated" {
+  default = false
+}
+
 variable "ami_owners" {
   default = ["self", "amazon", "aws-marketplace"]
 }
