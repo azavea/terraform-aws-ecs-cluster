@@ -131,7 +131,7 @@ data "aws_ami" "user_ami" {
 
 resource "aws_launch_template" "container_instance" {
   block_device_mappings {
-    device_name = var.lookup_latest_ami ? data.aws_ami.ecs_ami.root_device_name : data.aws_ami.user_ami.root_device_name
+    device_name = var.lookup_latest_ami ? join("", data.aws_ami.ecs_ami.*.root_device_name) : join("", data.aws_ami.user_ami.*.root_device_name)
 
     ebs {
       volume_type = var.root_block_device_type
@@ -151,7 +151,9 @@ resource "aws_launch_template" "container_instance" {
     name = aws_iam_instance_profile.container_instance.name
   }
 
-  image_id = var.lookup_latest_ami ? data.aws_ami.ecs_ami.image_id : data.aws_ami.user_ami.image_id
+  # Using join() is a workaround for depending on conditional resources. 	
+  # https://github.com/hashicorp/terraform/issues/2831#issuecomment-298751019
+  image_id = var.lookup_latest_ami ? join("", data.aws_ami.ecs_ami.*.image_id) : join("", data.aws_ami.user_ami.*.image_id)
 
   instance_initiated_shutdown_behavior = "terminate"
   instance_type                        = var.instance_type
