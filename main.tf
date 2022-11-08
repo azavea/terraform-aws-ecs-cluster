@@ -112,9 +112,19 @@ data "aws_ami" "ecs_ami" {
   owners = var.ami_owners
 
   filter {
-    name   = "name"
-    values = ["amzn-ami-*-amazon-ecs-optimized"]
-  }
+	    name   = "name"
+	    values = ["amzn-ami-*-amazon-ecs-optimized"]
+	  }
+	
+	  filter {
+	    name   = "architecture"
+	    values = ["x86_64"]
+	  }
+	
+	  filter {
+	    name   = "virtualization-type"
+	    values = ["hvm"]
+	  }
 }
 
 data "aws_ami" "user_ami" {
