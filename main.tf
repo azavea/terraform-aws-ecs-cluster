@@ -105,11 +105,8 @@ data "template_cloudinit_config" "container_instance_cloud_config" {
   }
 }
 
-# Pull the image ID for the latest Amazon ECS-optimized Amazon Linux 2 AMI
-# https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#al2ami
-
 data "aws_ami" "ecs_ami" {
-  count       = "${var.lookup_latest_ami ? 1 : 0}"
+  count       = var.lookup_latest_ami ? 1 : 0
   most_recent = true
 
   owners = var.ami_owners
