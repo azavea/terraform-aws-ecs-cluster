@@ -1,5 +1,7 @@
 ## Unreleased
 
+## 3.0.0
+
 - Add support for Terraform 0.12 [#56](https://github.com/azavea/terraform-aws-ecs-cluster/pull/56)
 - Remove auto scaling support from within module.
 - Rename `private_subnet_ids` to `subnet_ids`.
