@@ -6,7 +6,28 @@ variable "environment" {
   default = "Unknown"
 }
 
-variable "vpc_id" {}
+variable "cluster_name" {
+  default = ""
+}
+
+variable "autoscaling_group_name" {
+  default = ""
+}
+
+variable "security_group_name" {
+  default = ""
+}
+
+variable "ecs_for_ec2_service_role_name" {
+  default = ""
+}
+
+variable "ecs_service_role_name" {
+  default = ""
+}
+
+variable "vpc_id" {
+}
 
 variable "ami_id" {
   default = "ami-6944c513"
@@ -40,9 +61,11 @@ variable "detailed_monitoring" {
   default = false
 }
 
-variable "key_name" {}
+variable "key_name" {
+}
 
-variable "cloud_config_content" {}
+variable "cloud_config_content" {
+}
 
 variable "cloud_config_content_type" {
   default = "text/cloud-config"
@@ -76,65 +99,10 @@ variable "enabled_metrics" {
     "GroupTotalInstances",
   ]
 
-  type = "list"
+  type = list(string)
 }
 
-variable "private_subnet_ids" {
-  type = "list"
+variable "subnet_ids" {
+  type = list(string)
 }
 
-variable "scale_up_cooldown_seconds" {
-  default = "300"
-}
-
-variable "scale_down_cooldown_seconds" {
-  default = "300"
-}
-
-variable "high_cpu_evaluation_periods" {
-  default = "2"
-}
-
-variable "high_cpu_period_seconds" {
-  default = "300"
-}
-
-variable "high_cpu_threshold_percent" {
-  default = "90"
-}
-
-variable "low_cpu_evaluation_periods" {
-  default = "2"
-}
-
-variable "low_cpu_period_seconds" {
-  default = "300"
-}
-
-variable "low_cpu_threshold_percent" {
-  default = "10"
-}
-
-variable "high_memory_evaluation_periods" {
-  default = "2"
-}
-
-variable "high_memory_period_seconds" {
-  default = "300"
-}
-
-variable "high_memory_threshold_percent" {
-  default = "90"
-}
-
-variable "low_memory_evaluation_periods" {
-  default = "2"
-}
-
-variable "low_memory_period_seconds" {
-  default = "300"
-}
-
-variable "low_memory_threshold_percent" {
-  default = "10"
-}

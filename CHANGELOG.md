@@ -1,7 +1,19 @@
+## Unreleased
+
+## 3.0.0
+
+- Add support for Terraform 0.12 [#56](https://github.com/azavea/terraform-aws-ecs-cluster/pull/56)
+- Remove auto scaling support from within module.
+- Rename `private_subnet_ids` to `subnet_ids`.
+- Add ability to set cluster, auto scaling group, security group, and IAM service role names.
+- Add CI support via CircleCI.
+- Add repository metadata support via Probot Settings.
+- Use top level `owners` attributes for `aws_ami` (requires AWS provider 2.0.0+).
+
 ## 2.0.0
 
 - Remove `ecs_autoscale_role_name` and `ecs_autoscale_role_arn` outputs.
-- Remove Autoscaling IAM role and policy attachment. 
+- Remove Autoscaling IAM role and policy attachment.
 - Migrate to using `aws_launch_template` vs. `aws_launch_configuration` (requires an AWS provider `>= 1.34.0`).
 - Add `cpu_credit_specification` to enable support for EC2 burstable performance instances.
 - Add `detailed_monitoring` to enable support for CloudWatch detailed monitoring.
